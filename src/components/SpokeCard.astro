@@ -1,0 +1,58 @@
+---
+interface Side {
+  name: string;
+  url?: string;
+  blurb: string;
+}
+interface Props {
+  vertex: string;
+  status: "built" | "soon" | "concept";
+  public: Side;
+  private: Side;
+}
+const { vertex, status, public: pub, private: priv } = Astro.props;
+
+const statusLabel = { built: "live", soon: "in progress", concept: "planned" }[status];
+const statusClass = {
+  built: "text-ok border-ok/40 bg-ok/10",
+  soon: "text-public border-public/40 bg-public/10",
+  concept: "text-faint border-border bg-surface-2",
+}[status];
+
+const sides = [
+  { kind: "public", accent: "text-public", dot: "bg-public", ...pub },
+  { kind: "private", accent: "text-private", dot: "bg-private", ...priv },
+] as const;
+---
+
+<article class="rounded-2xl border border-border bg-surface/70 p-6 backdrop-blur-sm transition hover:border-accent-2/50">
+  <header class="mb-5 flex items-center justify-between gap-3">
+    <h3 class="text-lg font-semibold text-fg">{vertex}</h3>
+    <span class={`shrink-0 rounded-full border px-2.5 py-0.5 text-[11px] font-mono uppercase tracking-wide ${statusClass}`}>{statusLabel}</span>
+  </header>
+
+  <div class="grid gap-3 sm:grid-cols-2">
+    {sides.map((s) => {
+      const inner = (
+        <Fragment>
+          <div class="mb-1.5 flex items-center gap-2">
+            <span class={`h-2 w-2 rounded-full ${s.dot}`}></span>
+            <span class="font-mono text-[11px] uppercase tracking-wide text-faint">{s.kind}</span>
+          </div>
+          <div class={`font-mono text-sm font-semibold ${s.accent}`}>{s.name}</div>
+          <p class="mt-1 text-sm leading-snug text-muted">{s.blurb}</p>
+        </Fragment>
+      );
+      return s.url ? (
+        <a href={s.url} class="group block rounded-xl border border-border/70 bg-bg-2/40 p-4 transition hover:border-current hover:bg-surface-2">
+          {inner}
+          <span class={`mt-2 inline-block font-mono text-xs ${s.accent} opacity-0 transition group-hover:opacity-100`}>open →</span>
+        </a>
+      ) : (
+        <div class="rounded-xl border border-dashed border-border/70 bg-bg-2/20 p-4 opacity-80">
+          {inner}
+        </div>
+      );
+    })}
+  </div>
+</article>

@@ -1,0 +1,33 @@
+---
+import "../styles/global.css";
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = "Alter/Me/A/I — own your data, decide what flows where",
+  description = "marcoajello.ai is the hub of Alter/Me/A/I: an open-source membrane that mediates between every input and tool, encrypts your private side on-device, and lets you decide what crosses to the public side — every time.",
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://marcoajello.ai" />
+    <meta name="twitter:card" content="summary_large_image" />
+  </head>
+  <body class="min-h-screen antialiased">
+    <slot />
+  </body>
+</html>

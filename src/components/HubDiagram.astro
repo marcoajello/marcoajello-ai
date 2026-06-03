@@ -1,0 +1,112 @@
+---
+/*
+  The hub-and-spokes fractal, rendered as a data-driven radial SVG.
+  Center = Alter/Me/A/I (the membrane). Each spoke is a vertex; each vertex
+  splits into a public face and a private hold. Adding a vertex is one array
+  entry — the recursion is a design constraint, so the diagram is built to grow.
+*/
+const W = 820;
+const H = 640;
+const cx = W / 2;
+const cy = H / 2;
+const vertexR = 150; // distance center -> vertex node
+const leafR = 268; // distance center -> public/private leaf
+const spread = 24; // angular half-gap between a vertex's two leaves (deg)
+
+const rad = (deg: number) => (deg * Math.PI) / 180;
+const pt = (deg: number, r: number) => ({
+  x: cx + r * Math.cos(rad(deg)),
+  y: cy + r * Math.sin(rad(deg)),
+});
+
+type Vertex = {
+  angle: number;
+  label: string;
+  status: "built" | "soon" | "concept";
+  public: string;
+  private: string;
+};
+
+const vertices: Vertex[] = [
+  { angle: 0, label: "Personae / Vault", status: "built", public: "alter-me", private: "me-alter" },
+  { angle: 128, label: "Heuristics / Learning", status: "soon", public: "listening", private: "talking" },
+  { angle: 232, label: "Gaming / Health", status: "concept", public: "render", private: "hold" },
+];
+
+const statusColor: Record<Vertex["status"], string> = {
+  built: "var(--color-accent-2)",
+  soon: "var(--color-faint)",
+  concept: "var(--color-border)",
+};
+---
+
+<figure class="mx-auto w-full max-w-3xl" aria-label="Hub-and-spokes diagram: Alter/Me/A/I at the center, with paired public and private vertices radiating out.">
+  <svg viewBox={`0 0 ${W} ${H}`} class="w-full h-auto" role="img">
+    <defs>
+      <radialGradient id="coreGlow" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="#ff6b81" stop-opacity="0.9" />
+        <stop offset="55%" stop-color="#c1364a" stop-opacity="0.85" />
+        <stop offset="100%" stop-color="#2b1055" stop-opacity="0.95" />
+      </radialGradient>
+      <filter id="soft" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur stdDeviation="6" />
+      </filter>
+    </defs>
+
+    {/* spokes + leaf branches (drawn first, behind nodes) */}
+    {vertices.map((v) => {
+      const vp = pt(v.angle, vertexR);
+      const pub = pt(v.angle - spread, leafR);
+      const priv = pt(v.angle + spread, leafR);
+      const dash = v.status === "concept" ? "5 7" : v.status === "soon" ? "9 6" : "0";
+      return (
+        <g stroke-linecap="round">
+          <line x1={cx} y1={cy} x2={vp.x} y2={vp.y} stroke={statusColor[v.status]} stroke-width="2" stroke-dasharray={dash} opacity={v.status === "built" ? 0.9 : 0.55} />
+          <line x1={vp.x} y1={vp.y} x2={pub.x} y2={pub.y} stroke="var(--color-public)" stroke-width="1.75" stroke-dasharray={dash} opacity={v.status === "built" ? 0.85 : 0.4} />
+          <line x1={vp.x} y1={vp.y} x2={priv.x} y2={priv.y} stroke="var(--color-private)" stroke-width="1.75" stroke-dasharray={dash} opacity={v.status === "built" ? 0.85 : 0.4} />
+        </g>
+      );
+    })}
+
+    {/* public / private leaves */}
+    {vertices.map((v) => {
+      const pub = pt(v.angle - spread, leafR);
+      const priv = pt(v.angle + spread, leafR);
+      const dim = v.status === "built" ? 1 : 0.5;
+      return (
+        <g font-family="var(--font-mono)" font-size="13" text-anchor="middle">
+          <circle cx={pub.x} cy={pub.y} r="7" fill="var(--color-public)" opacity={dim} />
+          <text x={pub.x} y={pub.y - 14} fill="var(--color-public)" opacity={dim}>{v.public}</text>
+          <text x={pub.x} y={pub.y + 22} fill="var(--color-faint)" font-size="10" opacity={dim}>public</text>
+
+          <circle cx={priv.x} cy={priv.y} r="7" fill="var(--color-private)" opacity={dim} />
+          <text x={priv.x} y={priv.y - 14} fill="var(--color-private)" opacity={dim}>{v.private}</text>
+          <text x={priv.x} y={priv.y + 22} fill="var(--color-faint)" font-size="10" opacity={dim}>private</text>
+        </g>
+      );
+    })}
+
+    {/* vertex nodes */}
+    {vertices.map((v) => {
+      const vp = pt(v.angle, vertexR);
+      return (
+        <g text-anchor="middle">
+          <circle cx={vp.x} cy={vp.y} r="11" fill="var(--color-surface-2)" stroke={statusColor[v.status]} stroke-width="2" />
+          <text x={vp.x} y={vp.y - 20} fill="var(--color-fg)" font-family="var(--font-sans)" font-size="14" font-weight="600">{v.label}</text>
+          {v.status !== "built" && (
+            <text x={vp.x} y={vp.y + 28} fill="var(--color-faint)" font-family="var(--font-mono)" font-size="10">{v.status === "soon" ? "in progress" : "planned"}</text>
+          )}
+        </g>
+      );
+    })}
+
+    {/* the membrane at the center */}
+    <circle cx={cx} cy={cy} r="64" fill="url(#coreGlow)" filter="url(#soft)" opacity="0.55" class="pulse-slow" />
+    <circle cx={cx} cy={cy} r="46" fill="var(--color-bg-2)" stroke="var(--color-accent-2)" stroke-width="2" />
+    <text x={cx} y={cy - 4} text-anchor="middle" fill="var(--color-fg)" font-family="var(--font-sans)" font-size="16" font-weight="700">Alter<tspan fill="var(--color-accent-2)">/</tspan>Me<tspan fill="var(--color-accent-2)">/</tspan>A<tspan fill="var(--color-accent-2)">/</tspan>I</text>
+    <text x={cx} y={cy + 16} text-anchor="middle" fill="var(--color-faint)" font-family="var(--font-mono)" font-size="10.5">the membrane</text>
+  </svg>
+  <figcaption class="mt-4 text-center text-sm text-faint font-mono">
+    center → vertex → public&nbsp;/&nbsp;private. Everything crosses through the membrane.
+  </figcaption>
+</figure>

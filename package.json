@@ -1,0 +1,21 @@
+{
+  "name": "marcoajello-ai",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "description": "marcoajello.ai — the hub of Alter/Me/A/I. Hosts the membrane and anchors the public/private spokes.",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "astro": "^5.6.1"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.1.4",
+    "tailwindcss": "^4.1.4"
+  }
+}

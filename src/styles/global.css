@@ -1,0 +1,75 @@
+@import "tailwindcss";
+
+/*
+  marcoajello.ai design tokens.
+  Derived from the Cortex "Synthwave" default skin (80s neon on deep violet):
+  the hub should feel continuous with the extension it hosts.
+*/
+@theme {
+  --color-bg: #0a0712;
+  --color-bg-2: #0c0818;
+  --color-surface: #150f24;
+  --color-surface-2: #1d1533;
+  --color-border: #2b2150;
+
+  --color-fg: #f4f1ff;
+  --color-muted: #b7adde;
+  --color-faint: #7d72cf;
+
+  /* slash = infrastructure (the hub); the violet/magenta core */
+  --color-accent: #c1364a;
+  --color-accent-2: #ff6b81;
+  /* the public face (alter-me) reads warm; the private hold (me-alter) reads cool */
+  --color-public: #ff8a3d;
+  --color-private: #7d72cf;
+  --color-ok: #39ff14;
+
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    Helvetica, Arial, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas,
+    monospace;
+}
+
+html {
+  scroll-behavior: smooth;
+  background-color: var(--color-bg);
+  color-scheme: dark;
+}
+
+body {
+  background:
+    radial-gradient(1100px 600px at 50% -10%, #1a0f33 0%, transparent 60%),
+    radial-gradient(900px 500px at 100% 0%, #2b1055 0%, transparent 55%),
+    var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* The wordmark slashes — the architectural statement made visible. */
+.slash {
+  color: var(--color-accent-2);
+  font-weight: 400;
+  padding-inline: 0.04em;
+}
+
+/* faint scanline / membrane texture, very subtle */
+.membrane-grid {
+  background-image:
+    linear-gradient(to right, color-mix(in srgb, var(--color-border) 40%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in srgb, var(--color-border) 40%, transparent) 1px, transparent 1px);
+  background-size: 44px 44px;
+  -webkit-mask-image: radial-gradient(700px 400px at 50% 30%, black, transparent 75%);
+  mask-image: radial-gradient(700px 400px at 50% 30%, black, transparent 75%);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .pulse-slow {
+    animation: pulse-slow 4.5s ease-in-out infinite;
+  }
+  @keyframes pulse-slow {
+    0%, 100% { opacity: 0.55; }
+    50% { opacity: 1; }
+  }
+}
