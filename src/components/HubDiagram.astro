@@ -6,12 +6,12 @@
   entry — the recursion is a design constraint, so the diagram is built to grow.
 */
 const W = 820;
-const H = 640;
+const H = 740;
 const cx = W / 2;
 const cy = H / 2;
 const vertexR = 150; // distance center -> vertex node
-const leafR = 268; // distance center -> public/private leaf
-const spread = 24; // angular half-gap between a vertex's two leaves (deg)
+const branch = 118; // distance center -> public/private leaf
+const sep = 62; const branchMid = (a: number) => pt(a, vertexR + branch); const leafPub = (a: number) => { const m = branchMid(a); return { x: m.x, y: m.y - sep }; }; const leafPriv = (a: number) => { const m = branchMid(a); return { x: m.x, y: m.y + sep }; }; // angular half-gap between a vertex's two leaves (deg)
 
 const rad = (deg: number) => (deg * Math.PI) / 180;
 const pt = (deg: number, r: number) => ({
@@ -28,9 +28,9 @@ type Vertex = {
 };
 
 const vertices: Vertex[] = [
-  { angle: 0, label: "Personae / Vault", status: "built", public: "alter-me", private: "my-alter" },
-  { angle: 128, label: "Heuristics / Learning", status: "soon", public: "listening", private: "talking" },
-  { angle: 232, label: "Gaming / Health", status: "concept", public: "render", private: "hold" },
+  { angle: 315, label: "Personae / Vault", status: "built", public: "alter-me", private: "my-alter" },
+  { angle: 225, label: "Heuristics / Learning", status: "soon", public: "listening", private: "talking" },
+  { angle: 90, label: "Gaming / Health", status: "concept", public: "render", private: "hold" },
 ];
 
 const statusColor: Record<Vertex["status"], string> = {
@@ -108,8 +108,8 @@ const statusLabel: Record<Vertex["status"], string> = {
     {/* spokes + leaf branches (drawn first, behind nodes) */}
     {vertices.map((v) => {
       const vp = pt(v.angle, vertexR);
-      const pub = pt(v.angle - spread, leafR);
-      const priv = pt(v.angle + spread, leafR);
+      const pub = leafPub(v.angle);
+      const priv = leafPriv(v.angle);
       const dash = v.status === "concept" ? "5 7" : v.status === "soon" ? "9 6" : "0";
       return (
         <g stroke-linecap="round">
@@ -122,8 +122,8 @@ const statusLabel: Record<Vertex["status"], string> = {
 
     {/* public / private leaves */}
     {vertices.map((v) => {
-      const pub = pt(v.angle - spread, leafR);
-      const priv = pt(v.angle + spread, leafR);
+      const pub = leafPub(v.angle);
+      const priv = leafPriv(v.angle);
       const dim = v.status === "built" ? 1 : 0.5;
       return (
         <g font-family="var(--font-mono)" font-size="13" text-anchor="middle">
