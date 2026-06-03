@@ -3,7 +3,7 @@
   Hub-and-spokes as a self-similar Y-fractal with the cortex in the MIDDLE.
 
   • The cortex (alter/me/a/i) sits at the vertical centre of the canvas.
-  • THREE spokes leave it, ALL in the cortex's pink (accent-2), splayed ~120°
+  • THREE spokes leave it, ALL in the cortex's hot pink (accent #ff2e88), ~120°
     apart like a trefoil (two up legs at ±60° off vertical, one straight down):
       ── two SOLID arms UP, forming a wide Y, to the two real vertices:
            up-left  → Heuristics / Learning   (in progress)
@@ -25,7 +25,7 @@ const personae: Vertex = { label: "Personae / Vault", status: "built", public: "
 const heuristics: Vertex = { label: "Heuristics / Learning", status: "soon", public: "listening", private: "talking" };
 const gaming: Vertex = { label: "Gaming / Health", status: "concept", public: "render", private: "hold" };
 
-const PINK = "var(--color-accent-2)";
+const PINK = "var(--color-accent)"; // #ff2e88 — the cortex's hot pink
 const SOLID = "0";
 const DOTS = "2 7"; // round-capped dots — the "growth / not-yet-built" texture
 
@@ -131,8 +131,8 @@ const mUp = [mHeur, mPers];
   <svg viewBox={`0 0 ${MW} ${MH}`} class="block h-auto w-full sm:hidden" role="img">
     <defs>
       <radialGradient id="coreGlowM" cx="50%" cy="50%" r="50%">
-        <stop offset="0%" stop-color="#ff6b81" stop-opacity="0.9"></stop>
-        <stop offset="55%" stop-color="#c1364a" stop-opacity="0.85"></stop>
+        <stop offset="0%" stop-color="#ff5ea8" stop-opacity="0.9"></stop>
+        <stop offset="55%" stop-color="#ff2e88" stop-opacity="0.85"></stop>
         <stop offset="100%" stop-color="#2b1055" stop-opacity="0.95"></stop>
       </radialGradient>
       <filter id="softM" x="-50%" y="-50%" width="200%" height="200%">
@@ -196,8 +196,8 @@ const mUp = [mHeur, mPers];
 
     {/* the cortex, glowing, at the centre */}
     <circle cx={mcx} cy={mcy} r="42" fill="url(#coreGlowM)" filter="url(#softM)" opacity="0.55" class="pulse-slow"></circle>
-    <circle cx={mcx} cy={mcy} r="34" fill="var(--color-bg-2)" stroke="var(--color-accent-2)" stroke-width="2"></circle>
-    <text x={mcx} y={mcy - 2} text-anchor="middle" fill="var(--color-fg)" font-family="var(--font-sans)" font-size="14" font-weight="700">alter<tspan fill="var(--color-accent-2)">/</tspan>me<tspan fill="var(--color-accent-2)">/</tspan>a<tspan fill="var(--color-accent-2)">/</tspan>i</text>
+    <circle cx={mcx} cy={mcy} r="34" fill="var(--color-bg-2)" stroke="var(--color-accent)" stroke-width="2"></circle>
+    <text x={mcx} y={mcy - 2} text-anchor="middle" fill="var(--color-fg)" font-family="var(--font-sans)" font-size="14" font-weight="700">alter<tspan fill="var(--color-accent)">/</tspan>me<tspan fill="var(--color-accent)">/</tspan>a<tspan fill="var(--color-accent)">/</tspan>i</text>
     <text x={mcx} y={mcy + 13} text-anchor="middle" fill="var(--color-faint)" font-family="var(--font-mono)" font-size="9.5">the cortex</text>
   </svg>
 
@@ -205,8 +205,8 @@ const mUp = [mHeur, mPers];
   <svg viewBox={`0 0 ${DW} ${DH}`} class="hidden h-auto w-full sm:block" role="img">
     <defs>
       <radialGradient id="coreGlow" cx="50%" cy="50%" r="50%">
-        <stop offset="0%" stop-color="#ff6b81" stop-opacity="0.9"></stop>
-        <stop offset="55%" stop-color="#c1364a" stop-opacity="0.85"></stop>
+        <stop offset="0%" stop-color="#ff5ea8" stop-opacity="0.9"></stop>
+        <stop offset="55%" stop-color="#ff2e88" stop-opacity="0.85"></stop>
         <stop offset="100%" stop-color="#2b1055" stop-opacity="0.95"></stop>
       </radialGradient>
       <filter id="soft" x="-50%" y="-50%" width="200%" height="200%">
@@ -270,8 +270,8 @@ const mUp = [mHeur, mPers];
 
     {/* the cortex, glowing, at the centre */}
     <circle cx={dcx} cy={dcy} r="62" fill="url(#coreGlow)" filter="url(#soft)" opacity="0.55" class="pulse-slow"></circle>
-    <circle cx={dcx} cy={dcy} r="45" fill="var(--color-bg-2)" stroke="var(--color-accent-2)" stroke-width="2"></circle>
-    <text x={dcx} y={dcy - 4} text-anchor="middle" fill="var(--color-fg)" font-family="var(--font-sans)" font-size="16" font-weight="700">alter<tspan fill="var(--color-accent-2)">/</tspan>me<tspan fill="var(--color-accent-2)">/</tspan>a<tspan fill="var(--color-accent-2)">/</tspan>i</text>
+    <circle cx={dcx} cy={dcy} r="45" fill="var(--color-bg-2)" stroke="var(--color-accent)" stroke-width="2"></circle>
+    <text x={dcx} y={dcy - 4} text-anchor="middle" fill="var(--color-fg)" font-family="var(--font-sans)" font-size="16" font-weight="700">alter<tspan fill="var(--color-accent)">/</tspan>me<tspan fill="var(--color-accent)">/</tspan>a<tspan fill="var(--color-accent)">/</tspan>i</text>
     <text x={dcx} y={dcy + 15} text-anchor="middle" fill="var(--color-faint)" font-family="var(--font-mono)" font-size="10.5">the cortex</text>
   </svg>
 </figure>

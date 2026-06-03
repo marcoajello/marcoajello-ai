@@ -1,33 +1,38 @@
 @import "tailwindcss";
 
 /*
-  marcoajello.ai design tokens.
-  Derived from the alter/me/a/i extension's "Synthwave" default skin (80s neon
-  on deep violet): the hub should feel continuous with the suite it hosts.
+  marcoajello.ai design tokens — the CANONICAL alter/me/a/i design system,
+  shared verbatim with the extension and the vault GUI: all-monospace type,
+  hot-pink core + coral secondary, on deep violet. One look across the suite.
 */
 @theme {
-  --color-bg: #0a0712;
-  --color-bg-2: #0c0818;
-  --color-surface: #150f24;
-  --color-surface-2: #1d1533;
-  --color-border: #2b2150;
+  --color-bg: #0c0818;
+  --color-bg-2: #120c24;
+  --color-surface: #15102a;
+  --color-surface-2: #1f1740;
+  --color-border: #2e2154;
 
-  --color-fg: #f4f1ff;
-  --color-muted: #b7adde;
-  --color-faint: #7d72cf;
+  --color-fg: #fdf2ff;
+  --color-muted: #a89ad0;
+  --color-faint: #6f60a0;
 
-  /* slash = infrastructure (the hub); the violet/magenta core */
-  --color-accent: #c1364a;
-  --color-accent-2: #ff6b81;
+  /* hot-pink core (the cortex, the slashes); coral is the secondary accent */
+  --color-accent: #ff2e88;
+  --color-accent-2: #ff8a3d;
   /* the public face (alter-me) reads warm; the private hold (my-alter) reads cool */
   --color-public: #ff8a3d;
   --color-private: #7d72cf;
-  --color-ok: #39ff14;
+  --color-ok: #00f0a8;
 
-  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
-    Helvetica, Arial, sans-serif;
-  --font-mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas,
-    monospace;
+  /* Everything is monospace. --font-sans aliases the same stack so every
+     element — display, headings, labels, body — renders in JetBrains Mono. */
+  --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --font-sans: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+}
+
+/* The primary brand gradient — matches the extension's gradient Unlock button. */
+:root {
+  --fill-primary: linear-gradient(135deg, #ff2e88, #ff8a3d);
 }
 
 html {
@@ -45,7 +50,7 @@ body {
     radial-gradient(900px 500px at 100% 0%, #2b1055 0%, transparent 55%),
     var(--color-bg);
   color: var(--color-fg);
-  font-family: var(--font-sans);
+  font-family: var(--font-mono);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   overflow-x: hidden;
@@ -62,11 +67,17 @@ body {
   letter-spacing: -0.02em;
 }
 
-/* The wordmark slashes — the architectural statement made visible. */
+/* The wordmark slashes — the architectural statement made visible. Hot pink. */
 .slash {
-  color: var(--color-accent-2);
+  color: var(--color-accent);
   font-weight: 400;
   padding-inline: 0.04em;
+}
+
+/* Primary CTA / brand mark fill — the suite-wide pink→coral gradient. */
+.fill-primary {
+  background-image: var(--fill-primary);
+  background-color: var(--color-accent); /* fallback before gradient paints */
 }
 
 /* Long mono tokens (URLs, the wordmark in body copy) never punch out a row. */
