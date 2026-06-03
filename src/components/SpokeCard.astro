@@ -2,6 +2,7 @@
 interface Side {
   name: string;
   url?: string;
+  newTab?: boolean;
   blurb: string;
 }
 interface Props {
@@ -44,13 +45,23 @@ const sides = [
         </Fragment>
       );
       return s.url ? (
-        <a href={s.url} class="group block rounded-xl border border-border/70 bg-bg-2/40 p-4 transition hover:border-current hover:bg-surface-2">
+        <a
+          href={s.url}
+          target={s.newTab ? "_blank" : undefined}
+          rel={s.newTab ? "noopener noreferrer" : undefined}
+          class="group block rounded-xl border border-border/70 bg-bg-2/40 p-4 transition hover:border-current hover:bg-surface-2"
+        >
           {inner}
-          <span class={`mt-2 inline-block font-mono text-xs ${s.accent} opacity-0 transition group-hover:opacity-100`}>open →</span>
+          <span class={`mt-2 inline-block font-mono text-xs ${s.accent} opacity-0 transition group-hover:opacity-100`}>
+            open{s.newTab ? " ↗" : " →"}
+          </span>
         </a>
       ) : (
-        <div class="rounded-xl border border-dashed border-border/70 bg-bg-2/20 p-4 opacity-80">
+        <div class="rounded-xl border border-dashed border-border/70 bg-bg-2/20 p-4 opacity-90" aria-disabled="true">
           {inner}
+          <span class="mt-2 inline-flex items-center gap-1.5 rounded-full border border-border bg-surface-2 px-2 py-0.5 font-mono text-[10px] uppercase tracking-wide text-faint">
+            <span class="h-1.5 w-1.5 rounded-full bg-faint"></span>coming soon
+          </span>
         </div>
       );
     })}
