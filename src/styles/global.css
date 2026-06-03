@@ -34,6 +34,9 @@ html {
   scroll-behavior: smooth;
   background-color: var(--color-bg);
   color-scheme: dark;
+  /* Hard stop on any accidental horizontal scroll at phone widths. */
+  overflow-x: hidden;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
@@ -45,6 +48,18 @@ body {
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+
+/*
+  The wordmark — "alter/me/a/i". It must never break mid-token on a narrow
+  phone, so it stays on one line and scales fluidly instead of wrapping.
+*/
+.wordmark {
+  white-space: nowrap;
+  font-size: clamp(2.6rem, 12vw, 4.5rem);
+  line-height: 1.04;
+  letter-spacing: -0.02em;
 }
 
 /* The wordmark slashes — the architectural statement made visible. */
@@ -52,6 +67,12 @@ body {
   color: var(--color-accent-2);
   font-weight: 400;
   padding-inline: 0.04em;
+}
+
+/* Long mono tokens (URLs, the wordmark in body copy) never punch out a row. */
+.break-token {
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 /* faint scanline / cortex texture, very subtle */

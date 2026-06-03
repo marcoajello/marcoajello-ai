@@ -56,30 +56,33 @@ const spokes = [
   <!-- ───────────────────────── HERO ───────────────────────── -->
   <header class="relative overflow-hidden">
     <div class="cortex-grid pointer-events-none absolute inset-0"></div>
-    <div class="relative mx-auto max-w-5xl px-6 pt-10">
-      <nav class="flex items-center justify-between font-mono text-sm">
+    <div class="relative mx-auto max-w-5xl px-5 pt-8 sm:px-6 sm:pt-10">
+      <nav class="flex items-center justify-between gap-3 font-mono text-sm">
         <span class="font-semibold tracking-tight">
           marcoajello<span class="text-accent-2">.ai</span>
         </span>
         <div class="flex items-center gap-5 text-faint">
-          <a href="#fractal" class="transition hover:text-fg">architecture</a>
-          <a href="#spokes" class="transition hover:text-fg">spokes</a>
-          <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" class="rounded-full border border-accent-2/40 px-3 py-1 text-accent-2 transition hover:bg-accent-2/10">view the source ↗</a>
+          <a href="#fractal" class="hidden transition hover:text-fg sm:inline">architecture</a>
+          <a href="#spokes" class="hidden transition hover:text-fg sm:inline">spokes</a>
+          <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" class="shrink-0 whitespace-nowrap rounded-full border border-accent-2/40 px-3 py-1.5 text-accent-2 transition hover:bg-accent-2/10">
+            <span class="sm:hidden">source ↗</span>
+            <span class="hidden sm:inline">view the source ↗</span>
+          </a>
         </div>
       </nav>
     </div>
 
-    <div class="relative mx-auto max-w-4xl px-6 pb-12 pt-20 text-center sm:pt-28">
-      <p class="mb-5 inline-flex items-center gap-2 rounded-full border border-ok/40 bg-ok/10 px-3 py-1 font-mono text-xs text-ok backdrop-blur-sm">
-        <span class="h-1.5 w-1.5 rounded-full bg-ok pulse-slow"></span>
+    <div class="relative mx-auto max-w-4xl px-5 pb-12 pt-16 text-center sm:px-6 sm:pt-28">
+      <p class="mb-6 inline-flex items-center gap-2 rounded-full border border-ok/40 bg-ok/10 px-3 py-1 font-mono text-[11px] text-ok backdrop-blur-sm sm:text-xs">
+        <span class="h-1.5 w-1.5 shrink-0 rounded-full bg-ok pulse-slow"></span>
         free &amp; open source · local-first · you own your data
       </p>
 
-      <h1 class="text-balance text-5xl font-bold leading-[1.05] tracking-tight sm:text-7xl">
+      <h1 class="wordmark font-bold">
         alter<span class="slash">/</span>me<span class="slash">/</span>a<span class="slash">/</span>i
       </h1>
 
-      <p class="mx-auto mt-6 max-w-2xl text-balance text-lg leading-relaxed text-muted sm:text-xl">
+      <p class="mx-auto mt-6 max-w-2xl text-pretty text-base leading-relaxed text-muted sm:text-xl">
         A small suite of lightweight, <span class="text-fg">data-filtering browser
         extensions and apps</span> that feed your <span class="text-fg">Vault</span> — a
         local-first, encrypted store you fully own. Together they form
@@ -87,24 +90,24 @@ const spokes = [
         data-aggregation system.</span> The cortex is the engine in the middle.
       </p>
 
-      <div class="mt-9 flex flex-wrap items-center justify-center gap-3">
-        <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" class="rounded-full bg-accent-2 px-6 py-3 font-semibold text-bg transition hover:bg-public">
+      <div class="mx-auto mt-9 flex max-w-md flex-col items-stretch justify-center gap-3 sm:max-w-none sm:flex-row sm:flex-wrap sm:items-center">
+        <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" class="rounded-full bg-accent-2 px-6 py-3 text-center font-semibold text-bg transition hover:bg-public">
           Get the extension ↗
         </a>
-        <a href="#fractal" class="rounded-full border border-border bg-surface/60 px-6 py-3 font-medium text-fg backdrop-blur-sm transition hover:border-accent-2/50">
+        <a href="#fractal" class="rounded-full border border-border bg-surface/60 px-6 py-3 text-center font-medium text-fg backdrop-blur-sm transition hover:border-accent-2/50">
           See how it fits together
         </a>
-        <a href={COFFEE_URL} target="_blank" rel="noopener noreferrer" class="rounded-full border border-border bg-surface/60 px-6 py-3 font-medium text-fg backdrop-blur-sm transition hover:border-accent-2/50">
+        <a href={COFFEE_URL} target="_blank" rel="noopener noreferrer" class="rounded-full border border-border bg-surface/60 px-6 py-3 text-center font-medium text-fg backdrop-blur-sm transition hover:border-accent-2/50">
           ☕ Buy me a coffee
         </a>
       </div>
 
-      <p class="mx-auto mt-6 font-mono text-xs text-faint">
+      <p class="mx-auto mt-6 max-w-md text-pretty font-mono text-xs leading-relaxed text-faint">
         100% free and open source — every extension, the Vault, and the cortex.
-        <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" class="text-accent-2 underline-offset-2 hover:underline">github.com/me-alter ↗</a>
+        <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" class="break-token text-accent-2 underline-offset-2 hover:underline">github.com/me-alter ↗</a>
       </p>
 
-      <p class="mx-auto mt-10 max-w-xl font-mono text-xs leading-relaxed text-faint">
+      <p class="mx-auto mt-10 max-w-xl text-pretty font-mono text-xs leading-relaxed text-faint">
         The cortex is not a wall — it's a selectively-permeable gate with a
         doorman. Default-deny: nothing reaches the Vault, or crosses outward to
         the world, except through an explicit, scoped, revocable permission.
@@ -113,10 +116,10 @@ const spokes = [
   </header>
 
   <!-- ──────────────────── THE FRACTAL DIAGRAM ──────────────────── -->
-  <section id="fractal" class="mx-auto max-w-5xl scroll-mt-12 px-6 py-16 sm:py-24">
+  <section id="fractal" class="mx-auto max-w-5xl scroll-mt-12 px-5 py-14 sm:px-6 sm:py-24">
     <div class="mb-10 text-center">
-      <h2 class="text-3xl font-bold tracking-tight sm:text-4xl">Hub and spokes, all the way down</h2>
-      <p class="mx-auto mt-3 max-w-2xl text-muted">
+      <h2 class="text-balance text-3xl font-bold tracking-tight sm:text-4xl">Hub and spokes, all the way down</h2>
+      <p class="mx-auto mt-3 max-w-2xl text-pretty text-muted">
         One hub is the only true infrastructure. Each spoke is a paired
         public / private vertex at a new domain of life — and the engine is the
         only thing that touches both sides. The pattern is fractal: new pairs
@@ -127,7 +130,7 @@ const spokes = [
     <HubDiagram />
 
     <!-- the cortex → neurotype → sociotype model -->
-    <div class="mx-auto mt-14 grid max-w-4xl gap-4 sm:grid-cols-3">
+    <div class="mx-auto mt-12 grid max-w-4xl gap-4 sm:mt-14 sm:grid-cols-3">
       <div class="rounded-2xl border border-accent-2/30 bg-surface/60 p-5">
         <div class="font-mono text-xs uppercase tracking-wide text-accent-2">the cortex</div>
         <div class="mt-1 font-semibold">alter/me/a/i</div>
@@ -145,17 +148,17 @@ const spokes = [
       </div>
     </div>
 
-    <p class="mx-auto mt-6 max-w-3xl text-center font-mono text-xs text-faint">
+    <p class="mx-auto mt-8 max-w-3xl text-pretty text-center font-mono text-xs leading-relaxed text-faint">
       glyph key — slash <span class="text-accent-2">/</span> = the cortex at the infrastructure layer (the hub) ·
       dash <span class="text-public">-</span> = the cortex at a user-facing surface (alter-me, my-alter)
     </p>
   </section>
 
   <!-- ──────────────────────── THE SPOKES ──────────────────────── -->
-  <section id="spokes" class="mx-auto max-w-5xl scroll-mt-12 px-6 py-16 sm:py-20">
-    <div class="mb-10">
+  <section id="spokes" class="mx-auto max-w-5xl scroll-mt-12 px-5 py-14 sm:px-6 sm:py-20">
+    <div class="mb-8 sm:mb-10">
       <h2 class="text-3xl font-bold tracking-tight sm:text-4xl">The spokes</h2>
-      <p class="mt-3 max-w-2xl text-muted">
+      <p class="mt-3 max-w-2xl text-pretty text-muted">
         Each vertex is the identical move at a new domain: one public-facing
         site that expresses, one private-facing site that holds — both passing
         through the cortex, which encrypts the private side and mediates the
@@ -169,54 +172,54 @@ const spokes = [
   </section>
 
   <!-- ────────────────────── GET THE EXTENSION ────────────────────── -->
-  <section id="extension" class="scroll-mt-12 px-6 py-16 sm:py-24">
-    <div class="mx-auto max-w-3xl overflow-hidden rounded-3xl border border-accent-2/30 bg-gradient-to-b from-surface to-bg-2 p-8 text-center sm:p-12">
-      <p class="mb-3 inline-flex items-center gap-2 rounded-full border border-ok/40 bg-ok/10 px-3 py-1 font-mono text-xs text-ok">
+  <section id="extension" class="scroll-mt-12 px-5 py-14 sm:px-6 sm:py-24">
+    <div class="mx-auto max-w-3xl overflow-hidden rounded-3xl border border-accent-2/30 bg-gradient-to-b from-surface to-bg-2 p-6 text-center sm:p-12">
+      <p class="mb-4 inline-flex items-center gap-2 rounded-full border border-ok/40 bg-ok/10 px-3 py-1 font-mono text-xs text-ok">
         <span class="h-1.5 w-1.5 rounded-full bg-ok"></span>
         Free and open source
       </p>
       <h2 class="text-3xl font-bold tracking-tight sm:text-4xl">Get the suite</h2>
-      <p class="mx-auto mt-4 max-w-xl text-muted">
+      <p class="mx-auto mt-4 max-w-xl text-pretty text-muted">
         alter/me/a/i is a small suite of lightweight, data-filtering extensions
         and apps plus the Vault — a local-first, encrypted store you fully own.
         They capture only from the sources you choose; the cortex gates
         what reaches the Vault. Together they're the backbone of a complete
         personal data-aggregation system. Free and open source, end to end.
       </p>
-      <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
+      <div class="mx-auto mt-8 flex max-w-md flex-col items-stretch justify-center gap-3 sm:max-w-none sm:flex-row sm:flex-wrap sm:items-center">
         <!-- The source is public now; the packaged extension isn't on the stores yet. -->
         <a
           href={GITHUB_URL}
           target="_blank"
           rel="noopener noreferrer"
-          class="inline-flex items-center gap-2 rounded-full bg-accent-2 px-6 py-3 font-semibold text-bg transition hover:bg-public"
+          class="inline-flex items-center justify-center gap-2 rounded-full bg-accent-2 px-6 py-3 font-semibold text-bg transition hover:bg-public"
         >
           View the source on GitHub ↗
         </a>
         <span
           role="button"
           aria-disabled="true"
-          class="inline-flex cursor-not-allowed items-center gap-2 rounded-full border border-accent-2/40 bg-accent-2/10 px-6 py-3 font-semibold text-accent-2"
+          class="inline-flex cursor-not-allowed items-center justify-center gap-2 rounded-full border border-accent-2/40 bg-accent-2/10 px-6 py-3 font-semibold text-accent-2"
         >
-          <span class="h-2 w-2 rounded-full bg-accent-2/70"></span>
+          <span class="h-2 w-2 shrink-0 rounded-full bg-accent-2/70"></span>
           Add to your browser — coming soon
         </span>
         <a
           href={COFFEE_URL}
           target="_blank"
           rel="noopener noreferrer"
-          class="inline-flex items-center gap-2 rounded-full border border-border bg-surface/60 px-6 py-3 font-medium text-fg transition hover:border-accent-2/50"
+          class="inline-flex items-center justify-center gap-2 rounded-full border border-border bg-surface/60 px-6 py-3 font-medium text-fg transition hover:border-accent-2/50"
         >
           ☕ Buy me a coffee
         </a>
       </div>
-      <p class="mt-5 font-mono text-xs text-faint">The packaged extension is in development — store install links land here when it ships. Local-first, zero-network, works offline.</p>
+      <p class="mx-auto mt-5 max-w-md text-pretty font-mono text-xs leading-relaxed text-faint">The packaged extension is in development — store install links land here when it ships. Local-first, zero-network, works offline.</p>
     </div>
   </section>
 
   <!-- ───────────────────────── FOOTER ───────────────────────── -->
   <footer class="border-t border-border/60">
-    <div class="mx-auto flex max-w-5xl flex-col items-center justify-between gap-4 px-6 py-10 text-sm text-faint sm:flex-row">
+    <div class="mx-auto flex max-w-5xl flex-col items-center justify-between gap-5 px-5 py-10 text-center text-sm text-faint sm:flex-row sm:px-6 sm:text-left">
       <span class="font-mono">
         alter<span class="text-accent-2">/</span>me<span class="text-accent-2">/</span>a<span class="text-accent-2">/</span>i — hosted at marcoajello.ai
       </span>

@@ -2,7 +2,7 @@
 
 The **center / hub** of the Alter/Me/A/I ecosystem.
 
-This site hosts **Alter/Me/A/I** — the open-source membrane that mediates
+This site hosts **Alter/Me/A/I** — the open-source cortex that mediates
 between every input and every tool, encrypts the private side locally, and lets
 you decide what crosses to the public side, every time. It anchors the
 hub-and-spokes fractal: each spoke is a paired public / private vertex at a new
@@ -12,7 +12,7 @@ sides.
 > Architecture is canonical in `../cortex/docs/SUITE-MAP.md` (the extension
 > folder may be renamed `cortex → alter_me_a_i`). Glyph rule: slash `/` =
 > infrastructure layer (the hub); dash `-` = user-facing surfaces (alter-me,
-> me-alter). Filesystem tokens use underscores.
+> my-alter). Filesystem tokens use underscores.
 
 ## Stack
 

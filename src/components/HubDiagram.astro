@@ -38,10 +38,62 @@ const statusColor: Record<Vertex["status"], string> = {
   soon: "var(--color-faint)",
   concept: "var(--color-border)",
 };
+
+const statusLabel: Record<Vertex["status"], string> = {
+  built: "live",
+  soon: "in progress",
+  concept: "planned",
+};
 ---
 
 <figure class="mx-auto w-full max-w-3xl" aria-label="Hub-and-spokes diagram: alter/me/a/i at the center, with paired public and private vertices radiating out.">
-  <svg viewBox={`0 0 ${W} ${H}`} class="w-full h-auto" role="img">
+  {/* ───── Mobile: the radial layout is illegible when squeezed to a phone, so
+       below `sm` we render the same hub→vertex→public/private topology as a
+       vertical tree with full-size, tappable type. ───── */}
+  <div class="sm:hidden">
+    <div class="mx-auto flex max-w-xs flex-col items-center">
+      <div class="w-full rounded-2xl border-2 border-accent-2 bg-bg-2 px-5 py-3 text-center shadow-[0_0_28px_-6px_var(--color-accent)]">
+        <div class="text-lg font-bold tracking-tight">
+          alter<span class="slash">/</span>me<span class="slash">/</span>a<span class="slash">/</span>i
+        </div>
+        <div class="mt-0.5 font-mono text-[10px] uppercase tracking-wide text-faint">the cortex</div>
+      </div>
+      <div class="h-5 w-px bg-gradient-to-b from-accent-2/70 to-border"></div>
+    </div>
+
+    <ul class="space-y-3">
+      {vertices.map((v) => (
+        <li class="rounded-xl border border-border bg-surface/60 p-4">
+          <div class="mb-3 flex items-center justify-between gap-2">
+            <span class="text-sm font-semibold text-fg">{v.label}</span>
+            <span
+              class="shrink-0 rounded-full border px-2 py-0.5 font-mono text-[10px] uppercase tracking-wide"
+              style={`color:${statusColor[v.status]};border-color:color-mix(in srgb, ${statusColor[v.status]} 40%, transparent)`}
+            >{statusLabel[v.status]}</span>
+          </div>
+          <div class="grid grid-cols-2 gap-2">
+            <div class="rounded-lg border border-public/30 bg-bg-2/40 px-3 py-2">
+              <div class="flex items-center gap-1.5">
+                <span class="h-1.5 w-1.5 rounded-full bg-public"></span>
+                <span class="font-mono text-[10px] uppercase tracking-wide text-faint">public</span>
+              </div>
+              <div class="mt-0.5 truncate font-mono text-sm font-semibold text-public">{v.public}</div>
+            </div>
+            <div class="rounded-lg border border-private/30 bg-bg-2/40 px-3 py-2">
+              <div class="flex items-center gap-1.5">
+                <span class="h-1.5 w-1.5 rounded-full bg-private"></span>
+                <span class="font-mono text-[10px] uppercase tracking-wide text-faint">private</span>
+              </div>
+              <div class="mt-0.5 truncate font-mono text-sm font-semibold text-private">{v.private}</div>
+            </div>
+          </div>
+        </li>
+      ))}
+    </ul>
+  </div>
+
+  {/* ───── Tablet / desktop: the full radial fractal. ───── */}
+  <svg viewBox={`0 0 ${W} ${H}`} class="hidden h-auto w-full sm:block" role="img">
     <defs>
       <radialGradient id="coreGlow" cx="50%" cy="50%" r="50%">
         <stop offset="0%" stop-color="#ff6b81" stop-opacity="0.9" />
