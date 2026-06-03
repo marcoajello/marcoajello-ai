@@ -1,7 +1,7 @@
 ---
 /*
   The hub-and-spokes fractal, rendered as a data-driven radial SVG.
-  Center = Alter/Me/A/I (the membrane). Each spoke is a vertex; each vertex
+  Center = alter/me/a/i (the membrane). Each spoke is a vertex; each vertex
   splits into a public face and a private hold. Adding a vertex is one array
   entry — the recursion is a design constraint, so the diagram is built to grow.
 */
@@ -40,7 +40,7 @@ const statusColor: Record<Vertex["status"], string> = {
 };
 ---
 
-<figure class="mx-auto w-full max-w-3xl" aria-label="Hub-and-spokes diagram: Alter/Me/A/I at the center, with paired public and private vertices radiating out.">
+<figure class="mx-auto w-full max-w-3xl" aria-label="Hub-and-spokes diagram: alter/me/a/i at the center, with paired public and private vertices radiating out.">
   <svg viewBox={`0 0 ${W} ${H}`} class="w-full h-auto" role="img">
     <defs>
       <radialGradient id="coreGlow" cx="50%" cy="50%" r="50%">
@@ -103,7 +103,7 @@ const statusColor: Record<Vertex["status"], string> = {
     {/* the membrane at the center */}
     <circle cx={cx} cy={cy} r="64" fill="url(#coreGlow)" filter="url(#soft)" opacity="0.55" class="pulse-slow" />
     <circle cx={cx} cy={cy} r="46" fill="var(--color-bg-2)" stroke="var(--color-accent-2)" stroke-width="2" />
-    <text x={cx} y={cy - 4} text-anchor="middle" fill="var(--color-fg)" font-family="var(--font-sans)" font-size="16" font-weight="700">Alter<tspan fill="var(--color-accent-2)">/</tspan>Me<tspan fill="var(--color-accent-2)">/</tspan>A<tspan fill="var(--color-accent-2)">/</tspan>I</text>
+    <text x={cx} y={cy - 4} text-anchor="middle" fill="var(--color-fg)" font-family="var(--font-sans)" font-size="16" font-weight="700">alter<tspan fill="var(--color-accent-2)">/</tspan>me<tspan fill="var(--color-accent-2)">/</tspan>a<tspan fill="var(--color-accent-2)">/</tspan>i</text>
     <text x={cx} y={cy + 16} text-anchor="middle" fill="var(--color-faint)" font-family="var(--font-mono)" font-size="10.5">the membrane</text>
   </svg>
   <figcaption class="mt-4 text-center text-sm text-faint font-mono">
