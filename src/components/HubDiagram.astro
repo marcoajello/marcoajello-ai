@@ -3,8 +3,9 @@
   Hub-and-spokes as a self-similar Y-fractal with the cortex in the MIDDLE.
 
   • The cortex (alter/me/a/i) sits at the vertical centre of the canvas.
-  • THREE spokes leave it, ALL in the cortex's pink (accent-2):
-      ── two SOLID arms UP, forming a Y, to the two real vertices:
+  • THREE spokes leave it, ALL in the cortex's pink (accent-2), splayed ~120°
+    apart like a trefoil (two up legs at ±60° off vertical, one straight down):
+      ── two SOLID arms UP, forming a wide Y, to the two real vertices:
            up-left  → Heuristics / Learning   (in progress)
            up-right → Personae / Vault         (live)
       ── one DOTTED arm straight DOWN to Gaming / Health (planned), which keeps
@@ -35,11 +36,17 @@ const statusColor: Record<Status, string> = {
 };
 const statusLabel: Record<Status, string> = { built: "live", soon: "in progress", concept: "planned" };
 
-// ── The universal fork: 30° off vertical, each level 0.6× the last. ──
+// ── The universal leaf-fork: 30° off vertical, each level 0.6× the last. ──
 const FORK_DEG = 30;
 const SIN = Math.sin((FORK_DEG * Math.PI) / 180); // 0.5
 const COS = Math.cos((FORK_DEG * Math.PI) / 180); // 0.866…
 const RATIO = 0.6;
+
+// ── The cortex's own three spokes splay ~120° apart (trefoil): the two up
+//    legs sit at ±60° off vertical, the down leg points straight down. ──
+const SPOKE_DEG = 60;
+const SSIN = Math.sin((SPOKE_DEG * Math.PI) / 180); // 0.866…
+const SCOS = Math.cos((SPOKE_DEG * Math.PI) / 180); // 0.5
 
 type Seg = { x1: number; y1: number; x2: number; y2: number; w: number; o: number };
 
@@ -66,8 +73,8 @@ function fadedTree(x: number, y: number, len: number, dir: -1 | 1, depth: number
 
 // Build an upward vertex (cortex → up to vertex → forks up into public/private leaves).
 function upVertex(v: Vertex, side: -1 | 1, cx: number, cy: number, LV: number, LB: number) {
-  const vx = cx + side * LV * SIN;
-  const vy = cy - LV * COS;
+  const vx = cx + side * LV * SSIN; // spoke at ±60° off vertical
+  const vy = cy - LV * SCOS;
   return { v, side, vx, vy, pub: armPt(vx, vy, LB, -1, -1), priv: armPt(vx, vy, LB, 1, -1) };
 }
 // Build the downward vertex (cortex → straight down → forks down, then fades to infinity).
@@ -85,14 +92,14 @@ function downVertex(v: Vertex, cx: number, cy: number, LV: number, LB: number, d
 
 // ───────────── Desktop / tablet: cortex centred, Y up, fade down ─────────────
 const DW = 940;
-const DH = 760;
+const DH = 690;
 const dcx = DW / 2;
-const dcy = 384;
-const D_LVu = 188; // cortex → up vertex
-const D_LBu = 96; // up vertex → leaf
-const D_LVd = 176; // cortex → down vertex
-const D_LBd = 92; // down vertex → leaf
-const D_FADE = 3;
+const dcy = DH / 2; // cortex exactly vertically centred
+const D_LVu = 240; // cortex → up vertex (the wide ±60° legs)
+const D_LBu = 92; // up vertex → leaf
+const D_LVd = 164; // cortex → down vertex (straight down)
+const D_LBd = 88; // down vertex → leaf
+const D_FADE = 3; // fainter dotted forks below, fading to infinity
 
 const dHeur = upVertex(heuristics, -1, dcx, dcy, D_LVu, D_LBu); // up-left
 const dPers = upVertex(personae, 1, dcx, dcy, D_LVu, D_LBu); // up-right
@@ -101,13 +108,13 @@ const dUp = [dHeur, dPers];
 
 // ───────────── Mobile: same idea, narrow + tall ─────────────
 const MW = 380;
-const MH = 540;
+const MH = 480;
 const mcx = MW / 2;
-const mcy = 260;
-const M_LVu = 132;
-const M_LBu = 66;
+const mcy = MH / 2; // cortex exactly vertically centred
+const M_LVu = 98; // narrower ±60° legs so the wide Y + labels fit 380px
+const M_LBu = 56;
 const M_LVd = 120;
-const M_LBd = 66;
+const M_LBd = 54;
 const M_FADE = 3;
 
 const mHeur = upVertex(heuristics, -1, mcx, mcy, M_LVu, M_LBu);
@@ -267,10 +274,4 @@ const mUp = [mHeur, mPers];
     <text x={dcx} y={dcy - 4} text-anchor="middle" fill="var(--color-fg)" font-family="var(--font-sans)" font-size="16" font-weight="700">alter<tspan fill="var(--color-accent-2)">/</tspan>me<tspan fill="var(--color-accent-2)">/</tspan>a<tspan fill="var(--color-accent-2)">/</tspan>i</text>
     <text x={dcx} y={dcy + 15} text-anchor="middle" fill="var(--color-faint)" font-family="var(--font-mono)" font-size="10.5">the cortex</text>
   </svg>
-
-  <figcaption class="mt-5 text-center font-mono text-xs leading-relaxed text-faint">
-    the cortex at the centre · <span class="text-accent-2">pink spokes</span> out to every vertex ·
-    <span class="text-public"> public, left</span> &nbsp;·&nbsp; <span class="text-private">private, right</span> —
-    solid where it's built, dotted downward where it keeps growing, infinitely.
-  </figcaption>
 </figure>
