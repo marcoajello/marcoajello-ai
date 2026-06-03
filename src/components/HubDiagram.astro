@@ -1,164 +1,255 @@
 ---
 /*
-  The hub-and-spokes fractal, rendered as a data-driven radial SVG.
-  Center = alter/me/a/i (the cortex). Each spoke is a vertex; each vertex
-  splits into a public face and a private hold. Adding a vertex is one array
-  entry — the recursion is a design constraint, so the diagram is built to grow.
+  The hub-and-spokes structure, drawn as a self-similar Y-fractal.
+
+  ONE rule, repeated at every level: a node forks into two arms — PUBLIC on the
+  left, PRIVATE on the right — each arm at the same fixed angle off vertical and
+  scaled down by the same ratio. The cortex feeds each vertex; each vertex forks
+  the identical Y into its public/private leaves; each leaf keeps forking (faded)
+  to show the pattern continuing infinitely.
+
+  Two orientations of the SAME rule so it stays legible everywhere:
+   • ≥sm  — a wide top-down fractal (cortex at top, three vertices fanned below).
+   • <sm  — a narrow vertical stack (cortex on top, each vertex its own small Y)
+            so it fits a ~390px phone column without shrinking labels to mush.
 */
-const W = 820;
-const H = 740;
-const cx = W / 2;
-const cy = H / 2;
-const vertexR = 150; // distance center -> vertex node
-const branch = 118; // distance center -> public/private leaf
-const sep = 62; const branchMid = (a: number) => pt(a, vertexR + branch); const leafPub = (a: number) => { const m = branchMid(a); return { x: m.x, y: m.y - sep }; }; const leafPriv = (a: number) => { const m = branchMid(a); return { x: m.x, y: m.y + sep }; }; // angular half-gap between a vertex's two leaves (deg)
-
-const rad = (deg: number) => (deg * Math.PI) / 180;
-const pt = (deg: number, r: number) => ({
-  x: cx + r * Math.cos(rad(deg)),
-  y: cy + r * Math.sin(rad(deg)),
-});
-
+type Status = "built" | "soon" | "concept";
 type Vertex = {
-  angle: number;
   label: string;
-  status: "built" | "soon" | "concept";
+  status: Status;
   public: string;
   private: string;
 };
 
 const vertices: Vertex[] = [
-  { angle: 315, label: "Personae / Vault", status: "built", public: "alter-me", private: "my-alter" },
-  { angle: 225, label: "Heuristics / Learning", status: "soon", public: "listening", private: "talking" },
-  { angle: 90, label: "Gaming / Health", status: "concept", public: "render", private: "hold" },
+  { label: "Personae / Vault", status: "built", public: "alter-me", private: "my-alter" },
+  { label: "Heuristics / Learning", status: "soon", public: "listening", private: "talking" },
+  { label: "Gaming / Health", status: "concept", public: "render", private: "hold" },
 ];
 
-const statusColor: Record<Vertex["status"], string> = {
+const statusColor: Record<Status, string> = {
   built: "var(--color-accent-2)",
   soon: "var(--color-faint)",
   concept: "var(--color-border)",
 };
-
-const statusLabel: Record<Vertex["status"], string> = {
+const statusLabel: Record<Status, string> = {
   built: "live",
   soon: "in progress",
   concept: "planned",
 };
+const statusDash: Record<Status, string> = { built: "0", soon: "9 6", concept: "4 7" };
+
+// ── The universal fork: 30° off vertical, each level 0.6× the last. ──
+const FORK_DEG = 30;
+const SIN = Math.sin((FORK_DEG * Math.PI) / 180); // 0.5
+const COS = Math.cos((FORK_DEG * Math.PI) / 180); // 0.866…
+const RATIO = 0.6;
+
+type Seg = { x1: number; y1: number; x2: number; y2: number; w: number; o: number };
+
+// The faded, unlabelled continuation hanging off a leaf — the identical Y, smaller.
+function fadedTree(x: number, y: number, len: number, depth: number, level = 0): Seg[] {
+  if (depth <= 0) return [];
+  const dx = len * SIN;
+  const dy = len * COS;
+  const lx = x - dx, ly = y + dy; // public side (left)
+  const rx = x + dx, ry = y + dy; // private side (right)
+  const w = Math.max(0.7, 1.5 * Math.pow(RATIO, level));
+  const o = 0.26 * Math.pow(0.62, level);
+  return [
+    { x1: x, y1: y, x2: lx, y2: ly, w, o },
+    { x1: x, y1: y, x2: rx, y2: ry, w, o },
+    ...fadedTree(lx, ly, len * RATIO, depth - 1, level + 1),
+    ...fadedTree(rx, ry, len * RATIO, depth - 1, level + 1),
+  ];
+}
+
+const leaf = (x: number, y: number, len: number, sign: -1 | 1) => ({
+  x: x + sign * len * SIN,
+  y: y + len * COS,
+});
+
+// ───────────── Desktop / tablet: top-down fan ─────────────
+const DW = 940;
+const DH = 700;
+const dcx = DW / 2;
+const dcy = 108;
+const LV = 330; // cortex → vertex
+const LB = 98; // vertex → leaf
+const FADE_DEPTH = 2;
+
+// left → middle → right.  Built/anchor vertex sits in the centre.
+const dOrder = [vertices[1], vertices[0], vertices[2]];
+const dSlots: Array<-1 | 0 | 1> = [-1, 0, 1];
+const dVerts = dOrder.map((v, i) => {
+  const s = dSlots[i];
+  const vx = dcx + s * LV * SIN;
+  const vy = dcy + (s === 0 ? LV : LV * COS); // centre arm hangs straight down
+  const pub = leaf(vx, vy, LB, -1);
+  const priv = leaf(vx, vy, LB, 1);
+  return {
+    v,
+    vx,
+    vy,
+    pub,
+    priv,
+    faded: [
+      ...fadedTree(pub.x, pub.y, LB * RATIO, FADE_DEPTH),
+      ...fadedTree(priv.x, priv.y, LB * RATIO, FADE_DEPTH),
+    ],
+  };
+});
+
+// ───────────── Mobile: narrow vertical stack ─────────────
+const MW = 340;
+const mcx = MW / 2;
+const mCortexY = 66;
+const mTop = 150; // first vertex node
+const mRow = 200; // vertical pitch between vertices
+const MLB = 74;
+const mVerts = vertices.map((v, i) => {
+  const vx = mcx;
+  const vy = mTop + i * mRow;
+  const pub = leaf(vx, vy, MLB, -1);
+  const priv = leaf(vx, vy, MLB, 1);
+  return {
+    v,
+    vx,
+    vy,
+    pub,
+    priv,
+    faded: [
+      ...fadedTree(pub.x, pub.y, MLB * RATIO, FADE_DEPTH),
+      ...fadedTree(priv.x, priv.y, MLB * RATIO, FADE_DEPTH),
+    ],
+  };
+});
+const MH = mTop + (vertices.length - 1) * mRow + 150;
 ---
 
-<figure class="mx-auto w-full max-w-3xl" aria-label="Hub-and-spokes diagram: alter/me/a/i at the center, with paired public and private vertices radiating out.">
-  {/* ───── Mobile: the radial layout is illegible when squeezed to a phone, so
-       below `sm` we render the same hub→vertex→public/private topology as a
-       vertical tree with full-size, tappable type. ───── */}
-  <div class="sm:hidden">
-    <div class="mx-auto flex max-w-xs flex-col items-center">
-      <div class="w-full rounded-2xl border-2 border-accent-2 bg-bg-2 px-5 py-3 text-center shadow-[0_0_28px_-6px_var(--color-accent)]">
-        <div class="text-lg font-bold tracking-tight">
-          alter<span class="slash">/</span>me<span class="slash">/</span>a<span class="slash">/</span>i
-        </div>
-        <div class="mt-0.5 font-mono text-[10px] uppercase tracking-wide text-faint">the cortex</div>
-      </div>
-      <div class="h-5 w-px bg-gradient-to-b from-accent-2/70 to-border"></div>
-    </div>
-
-    <ul class="space-y-3">
-      {vertices.map((v) => (
-        <li class="rounded-xl border border-border bg-surface/60 p-4">
-          <div class="mb-3 flex items-center justify-between gap-2">
-            <span class="text-sm font-semibold text-fg">{v.label}</span>
-            <span
-              class="shrink-0 rounded-full border px-2 py-0.5 font-mono text-[10px] uppercase tracking-wide"
-              style={`color:${statusColor[v.status]};border-color:color-mix(in srgb, ${statusColor[v.status]} 40%, transparent)`}
-            >{statusLabel[v.status]}</span>
-          </div>
-          <div class="grid grid-cols-2 gap-2">
-            <div class="rounded-lg border border-public/30 bg-bg-2/40 px-3 py-2">
-              <div class="flex items-center gap-1.5">
-                <span class="h-1.5 w-1.5 rounded-full bg-public"></span>
-                <span class="font-mono text-[10px] uppercase tracking-wide text-faint">public</span>
-              </div>
-              <div class="mt-0.5 truncate font-mono text-sm font-semibold text-public">{v.public}</div>
-            </div>
-            <div class="rounded-lg border border-private/30 bg-bg-2/40 px-3 py-2">
-              <div class="flex items-center gap-1.5">
-                <span class="h-1.5 w-1.5 rounded-full bg-private"></span>
-                <span class="font-mono text-[10px] uppercase tracking-wide text-faint">private</span>
-              </div>
-              <div class="mt-0.5 truncate font-mono text-sm font-semibold text-private">{v.private}</div>
-            </div>
-          </div>
-        </li>
-      ))}
-    </ul>
-  </div>
-
-  {/* ───── Tablet / desktop: the full radial fractal. ───── */}
-  <svg viewBox={`0 0 ${W} ${H}`} class="hidden h-auto w-full sm:block" role="img">
+<figure
+  class="mx-auto w-full max-w-3xl"
+  aria-label="Self-similar Y-fractal: alter/me/a/i (the cortex) at the centre forks into the vertices Personae / Vault, Heuristics / Learning and Gaming / Health; each vertex forks the same way into a public (left) and private (right) leaf, and the pattern repeats outward."
+>
+  {/* ════════ MOBILE (<sm): vertical stack of identical Y-units ════════ */}
+  <svg viewBox={`0 0 ${MW} ${MH}`} class="block h-auto w-full sm:hidden" role="img">
     <defs>
-      <radialGradient id="coreGlow" cx="50%" cy="50%" r="50%">
-        <stop offset="0%" stop-color="#ff6b81" stop-opacity="0.9" />
-        <stop offset="55%" stop-color="#c1364a" stop-opacity="0.85" />
-        <stop offset="100%" stop-color="#2b1055" stop-opacity="0.95" />
+      <radialGradient id="coreGlowM" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="#ff6b81" stop-opacity="0.9"></stop>
+        <stop offset="55%" stop-color="#c1364a" stop-opacity="0.85"></stop>
+        <stop offset="100%" stop-color="#2b1055" stop-opacity="0.95"></stop>
       </radialGradient>
-      <filter id="soft" x="-50%" y="-50%" width="200%" height="200%">
-        <feGaussianBlur stdDeviation="6" />
+      <filter id="softM" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur stdDeviation="6"></feGaussianBlur>
       </filter>
     </defs>
 
-    {/* spokes + leaf branches (drawn first, behind nodes) */}
-    {vertices.map((v) => {
-      const vp = pt(v.angle, vertexR);
-      const pub = leafPub(v.angle);
-      const priv = leafPriv(v.angle);
-      const dash = v.status === "concept" ? "5 7" : v.status === "soon" ? "9 6" : "0";
+    {/* spine: cortex down through each vertex node */}
+    <line x1={mcx} y1={mCortexY} x2={mcx} y2={mVerts[mVerts.length - 1].vy} stroke="var(--color-border)" stroke-width="1.5" opacity="0.6"></line>
+
+    {/* faded continuation (behind everything) */}
+    {mVerts.flatMap((d) =>
+      d.faded.map((s) => (
+        <line x1={s.x1} y1={s.y1} x2={s.x2} y2={s.y2} stroke="var(--color-faint)" stroke-width={s.w} stroke-linecap="round" opacity={s.o}></line>
+      ))
+    )}
+
+    {/* per-vertex Y + labels */}
+    {mVerts.map((d) => {
+      const c = statusColor[d.v.status];
       return (
-        <g stroke-linecap="round">
-          <line x1={cx} y1={cy} x2={vp.x} y2={vp.y} stroke={statusColor[v.status]} stroke-width="2" stroke-dasharray={dash} opacity={v.status === "built" ? 0.9 : 0.55} />
-          <line x1={vp.x} y1={vp.y} x2={pub.x} y2={pub.y} stroke="var(--color-public)" stroke-width="1.75" stroke-dasharray={dash} opacity={v.status === "built" ? 0.85 : 0.4} />
-          <line x1={vp.x} y1={vp.y} x2={priv.x} y2={priv.y} stroke="var(--color-private)" stroke-width="1.75" stroke-dasharray={dash} opacity={v.status === "built" ? 0.85 : 0.4} />
+        <g>
+          {/* the Y arms */}
+          <line x1={d.vx} y1={d.vy} x2={d.pub.x} y2={d.pub.y} stroke="var(--color-public)" stroke-width="2" stroke-linecap="round" stroke-dasharray={statusDash[d.v.status]} opacity={d.v.status === "built" ? 0.95 : 0.6}></line>
+          <line x1={d.vx} y1={d.vy} x2={d.priv.x} y2={d.priv.y} stroke="var(--color-private)" stroke-width="2" stroke-linecap="round" stroke-dasharray={statusDash[d.v.status]} opacity={d.v.status === "built" ? 0.95 : 0.6}></line>
+
+          {/* vertex label + status, above the node */}
+          <text x={d.vx} y={d.vy - 16} text-anchor="middle" fill="var(--color-fg)" font-family="var(--font-sans)" font-size="13" font-weight="600">{d.v.label}</text>
+          <text x={d.vx} y={d.vy - 3} text-anchor="middle" fill={c} font-family="var(--font-mono)" font-size="9.5" letter-spacing="0.06em">{statusLabel[d.v.status].toUpperCase()}</text>
+
+          {/* vertex node */}
+          <circle cx={d.vx} cy={d.vy} r="6" fill="var(--color-surface-2)" stroke={c} stroke-width="2"></circle>
+
+          {/* leaves — public dot+name to the left, private to the right */}
+          <circle cx={d.pub.x} cy={d.pub.y} r="5.5" fill="var(--color-public)"></circle>
+          <text x={d.pub.x - 11} y={d.pub.y + 4} text-anchor="end" fill="var(--color-public)" font-family="var(--font-mono)" font-size="12.5" font-weight="600">{d.v.public}</text>
+          <text x={d.pub.x - 11} y={d.pub.y + 17} text-anchor="end" fill="var(--color-faint)" font-family="var(--font-mono)" font-size="9">public</text>
+
+          <circle cx={d.priv.x} cy={d.priv.y} r="5.5" fill="var(--color-private)"></circle>
+          <text x={d.priv.x + 11} y={d.priv.y + 4} text-anchor="start" fill="var(--color-private)" font-family="var(--font-mono)" font-size="12.5" font-weight="600">{d.v.private}</text>
+          <text x={d.priv.x + 11} y={d.priv.y + 17} text-anchor="start" fill="var(--color-faint)" font-family="var(--font-mono)" font-size="9">private</text>
         </g>
       );
     })}
 
-    {/* public / private leaves */}
-    {vertices.map((v) => {
-      const pub = leafPub(v.angle);
-      const priv = leafPriv(v.angle);
-      const dim = v.status === "built" ? 1 : 0.5;
-      return (
-        <g font-family="var(--font-mono)" font-size="13" text-anchor="middle">
-          <circle cx={pub.x} cy={pub.y} r="7" fill="var(--color-public)" opacity={dim} />
-          <text x={pub.x} y={pub.y - 14} fill="var(--color-public)" opacity={dim}>{v.public}</text>
-          <text x={pub.x} y={pub.y + 22} fill="var(--color-faint)" font-size="10" opacity={dim}>public</text>
-
-          <circle cx={priv.x} cy={priv.y} r="7" fill="var(--color-private)" opacity={dim} />
-          <text x={priv.x} y={priv.y - 14} fill="var(--color-private)" opacity={dim}>{v.private}</text>
-          <text x={priv.x} y={priv.y + 22} fill="var(--color-faint)" font-size="10" opacity={dim}>private</text>
-        </g>
-      );
-    })}
-
-    {/* vertex nodes */}
-    {vertices.map((v) => {
-      const vp = pt(v.angle, vertexR);
-      return (
-        <g text-anchor="middle">
-          <circle cx={vp.x} cy={vp.y} r="11" fill="var(--color-surface-2)" stroke={statusColor[v.status]} stroke-width="2" />
-          <text x={vp.x} y={vp.y - 20} fill="var(--color-fg)" font-family="var(--font-sans)" font-size="14" font-weight="600">{v.label}</text>
-          {v.status !== "built" && (
-            <text x={vp.x} y={vp.y + 28} fill="var(--color-faint)" font-family="var(--font-mono)" font-size="10">{v.status === "soon" ? "in progress" : "planned"}</text>
-          )}
-        </g>
-      );
-    })}
-
-    {/* the cortex at the center */}
-    <circle cx={cx} cy={cy} r="64" fill="url(#coreGlow)" filter="url(#soft)" opacity="0.55" class="pulse-slow" />
-    <circle cx={cx} cy={cy} r="46" fill="var(--color-bg-2)" stroke="var(--color-accent-2)" stroke-width="2" />
-    <text x={cx} y={cy - 4} text-anchor="middle" fill="var(--color-fg)" font-family="var(--font-sans)" font-size="16" font-weight="700">alter<tspan fill="var(--color-accent-2)">/</tspan>me<tspan fill="var(--color-accent-2)">/</tspan>a<tspan fill="var(--color-accent-2)">/</tspan>i</text>
-    <text x={cx} y={cy + 16} text-anchor="middle" fill="var(--color-faint)" font-family="var(--font-mono)" font-size="10.5">the cortex</text>
+    {/* the cortex, glowing, at the top */}
+    <circle cx={mcx} cy={mCortexY} r="42" fill="url(#coreGlowM)" filter="url(#softM)" opacity="0.55" class="pulse-slow"></circle>
+    <circle cx={mcx} cy={mCortexY} r="34" fill="var(--color-bg-2)" stroke="var(--color-accent-2)" stroke-width="2"></circle>
+    <text x={mcx} y={mCortexY - 2} text-anchor="middle" fill="var(--color-fg)" font-family="var(--font-sans)" font-size="14" font-weight="700">alter<tspan fill="var(--color-accent-2)">/</tspan>me<tspan fill="var(--color-accent-2)">/</tspan>a<tspan fill="var(--color-accent-2)">/</tspan>i</text>
+    <text x={mcx} y={mCortexY + 13} text-anchor="middle" fill="var(--color-faint)" font-family="var(--font-mono)" font-size="9.5">the cortex</text>
   </svg>
-  <figcaption class="mt-4 text-center text-sm text-faint font-mono">
-    center → vertex → public&nbsp;/&nbsp;private. Everything crosses through the cortex.
+
+  {/* ════════ DESKTOP / TABLET (≥sm): wide top-down fan ════════ */}
+  <svg viewBox={`0 0 ${DW} ${DH}`} class="hidden h-auto w-full sm:block" role="img">
+    <defs>
+      <radialGradient id="coreGlow" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="#ff6b81" stop-opacity="0.9"></stop>
+        <stop offset="55%" stop-color="#c1364a" stop-opacity="0.85"></stop>
+        <stop offset="100%" stop-color="#2b1055" stop-opacity="0.95"></stop>
+      </radialGradient>
+      <filter id="soft" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur stdDeviation="6"></feGaussianBlur>
+      </filter>
+    </defs>
+
+    {/* faded continuation (behind everything) */}
+    {dVerts.flatMap((d) =>
+      d.faded.map((s) => (
+        <line x1={s.x1} y1={s.y1} x2={s.x2} y2={s.y2} stroke="var(--color-faint)" stroke-width={s.w} stroke-linecap="round" opacity={s.o}></line>
+      ))
+    )}
+
+    {/* cortex → vertex spokes */}
+    {dVerts.map((d) => (
+      <line x1={dcx} y1={dcy} x2={d.vx} y2={d.vy} stroke={statusColor[d.v.status]} stroke-width="2" stroke-linecap="round" stroke-dasharray={statusDash[d.v.status]} opacity={d.v.status === "built" ? 0.9 : 0.55}></line>
+    ))}
+
+    {/* vertex → leaf Y arms + leaves + labels */}
+    {dVerts.map((d) => {
+      const c = statusColor[d.v.status];
+      const op = d.v.status === "built" ? 0.95 : 0.6;
+      return (
+        <g>
+          <line x1={d.vx} y1={d.vy} x2={d.pub.x} y2={d.pub.y} stroke="var(--color-public)" stroke-width="2" stroke-linecap="round" stroke-dasharray={statusDash[d.v.status]} opacity={op}></line>
+          <line x1={d.vx} y1={d.vy} x2={d.priv.x} y2={d.priv.y} stroke="var(--color-private)" stroke-width="2" stroke-linecap="round" stroke-dasharray={statusDash[d.v.status]} opacity={op}></line>
+
+          {/* leaves */}
+          <circle cx={d.pub.x} cy={d.pub.y} r="6" fill="var(--color-public)"></circle>
+          <text x={d.pub.x - 12} y={d.pub.y + 1} text-anchor="end" fill="var(--color-public)" font-family="var(--font-mono)" font-size="13" font-weight="600">{d.v.public}</text>
+          <text x={d.pub.x - 12} y={d.pub.y + 14} text-anchor="end" fill="var(--color-faint)" font-family="var(--font-mono)" font-size="9.5">public</text>
+
+          <circle cx={d.priv.x} cy={d.priv.y} r="6" fill="var(--color-private)"></circle>
+          <text x={d.priv.x + 12} y={d.priv.y + 1} text-anchor="start" fill="var(--color-private)" font-family="var(--font-mono)" font-size="13" font-weight="600">{d.v.private}</text>
+          <text x={d.priv.x + 12} y={d.priv.y + 14} text-anchor="start" fill="var(--color-faint)" font-family="var(--font-mono)" font-size="9.5">private</text>
+
+          {/* vertex node + label above */}
+          <text x={d.vx} y={d.vy - 22} text-anchor="middle" fill="var(--color-fg)" font-family="var(--font-sans)" font-size="14" font-weight="600">{d.v.label}</text>
+          <text x={d.vx} y={d.vy - 8} text-anchor="middle" fill={c} font-family="var(--font-mono)" font-size="10" letter-spacing="0.06em">{statusLabel[d.v.status].toUpperCase()}</text>
+          <circle cx={d.vx} cy={d.vy} r="7" fill="var(--color-surface-2)" stroke={c} stroke-width="2"></circle>
+        </g>
+      );
+    })}
+
+    {/* the cortex, glowing, at the centre-top */}
+    <circle cx={dcx} cy={dcy} r="62" fill="url(#coreGlow)" filter="url(#soft)" opacity="0.55" class="pulse-slow"></circle>
+    <circle cx={dcx} cy={dcy} r="45" fill="var(--color-bg-2)" stroke="var(--color-accent-2)" stroke-width="2"></circle>
+    <text x={dcx} y={dcy - 4} text-anchor="middle" fill="var(--color-fg)" font-family="var(--font-sans)" font-size="16" font-weight="700">alter<tspan fill="var(--color-accent-2)">/</tspan>me<tspan fill="var(--color-accent-2)">/</tspan>a<tspan fill="var(--color-accent-2)">/</tspan>i</text>
+    <text x={dcx} y={dcy + 15} text-anchor="middle" fill="var(--color-faint)" font-family="var(--font-mono)" font-size="10.5">the cortex</text>
+  </svg>
+
+  <figcaption class="mt-5 text-center font-mono text-xs leading-relaxed text-faint">
+    every fork is the same Y — <span class="text-public">public, left</span>
+    &nbsp;·&nbsp; <span class="text-private">private, right</span> — scaled down and
+    repeated outward, infinitely. Everything crosses through the cortex.
   </figcaption>
 </figure>
