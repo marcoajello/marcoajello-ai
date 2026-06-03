@@ -3,7 +3,7 @@
   "type": "module",
   "version": "0.1.0",
   "private": true,
-  "description": "marcoajello.ai — the hub of Alter/Me/A/I. Hosts the membrane and anchors the public/private spokes.",
+  "description": "marcoajello.ai — the hub of alter/me/a/i. Hosts the cortex and anchors the public/private spokes.",
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",

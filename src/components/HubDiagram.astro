@@ -1,7 +1,7 @@
 ---
 /*
   The hub-and-spokes fractal, rendered as a data-driven radial SVG.
-  Center = alter/me/a/i (the membrane). Each spoke is a vertex; each vertex
+  Center = alter/me/a/i (the cortex). Each spoke is a vertex; each vertex
   splits into a public face and a private hold. Adding a vertex is one array
   entry — the recursion is a design constraint, so the diagram is built to grow.
 */
@@ -28,7 +28,7 @@ type Vertex = {
 };
 
 const vertices: Vertex[] = [
-  { angle: 0, label: "Personae / Vault", status: "built", public: "alter-me", private: "me-alter" },
+  { angle: 0, label: "Personae / Vault", status: "built", public: "alter-me", private: "my-alter" },
   { angle: 128, label: "Heuristics / Learning", status: "soon", public: "listening", private: "talking" },
   { angle: 232, label: "Gaming / Health", status: "concept", public: "render", private: "hold" },
 ];
@@ -100,13 +100,13 @@ const statusColor: Record<Vertex["status"], string> = {
       );
     })}
 
-    {/* the membrane at the center */}
+    {/* the cortex at the center */}
     <circle cx={cx} cy={cy} r="64" fill="url(#coreGlow)" filter="url(#soft)" opacity="0.55" class="pulse-slow" />
     <circle cx={cx} cy={cy} r="46" fill="var(--color-bg-2)" stroke="var(--color-accent-2)" stroke-width="2" />
     <text x={cx} y={cy - 4} text-anchor="middle" fill="var(--color-fg)" font-family="var(--font-sans)" font-size="16" font-weight="700">alter<tspan fill="var(--color-accent-2)">/</tspan>me<tspan fill="var(--color-accent-2)">/</tspan>a<tspan fill="var(--color-accent-2)">/</tspan>i</text>
-    <text x={cx} y={cy + 16} text-anchor="middle" fill="var(--color-faint)" font-family="var(--font-mono)" font-size="10.5">the membrane</text>
+    <text x={cx} y={cy + 16} text-anchor="middle" fill="var(--color-faint)" font-family="var(--font-mono)" font-size="10.5">the cortex</text>
   </svg>
   <figcaption class="mt-4 text-center text-sm text-faint font-mono">
-    center → vertex → public&nbsp;/&nbsp;private. Everything crosses through the membrane.
+    center → vertex → public&nbsp;/&nbsp;private. Everything crosses through the cortex.
   </figcaption>
 </figure>

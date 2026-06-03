@@ -3,6 +3,11 @@ import Base from "../layouts/Base.astro";
 import HubDiagram from "../components/HubDiagram.astro";
 import SpokeCard from "../components/SpokeCard.astro";
 
+// The whole suite is free and open source. GitHub org stays "me-alter"
+// (org name is independent of the displayed persona domain my-alter.ai).
+const GITHUB_URL = "https://github.com/me-alter";
+const COFFEE_URL = "https://buymeacoffee.com/marcoajello";
+
 const spokes = [
   {
     vertex: "Personae / Vault",
@@ -10,11 +15,11 @@ const spokes = [
     public: {
       // alter-me.ai isn't live yet — render as coming soon, not a dead link.
       name: "alter-me.ai",
-      blurb: "know thyself | own your self — the sociotype: the face you deploy outward, shaped by the membrane's rules.",
+      blurb: "know thyself | own your self — the sociotype: the face you deploy outward, shaped by the cortex's rules.",
     },
     private: {
-      // me-alter.ai isn't live yet — render as coming soon, not a dead link.
-      name: "me-alter.ai",
+      // my-alter.ai isn't live yet — render as coming soon, not a dead link.
+      name: "my-alter.ai",
       blurb: "own your self | know thyself — the neurotype: the model-of-you, aggregated and interpreted on your terms.",
     },
   },
@@ -50,7 +55,7 @@ const spokes = [
 <Base>
   <!-- ───────────────────────── HERO ───────────────────────── -->
   <header class="relative overflow-hidden">
-    <div class="membrane-grid pointer-events-none absolute inset-0"></div>
+    <div class="cortex-grid pointer-events-none absolute inset-0"></div>
     <div class="relative mx-auto max-w-5xl px-6 pt-10">
       <nav class="flex items-center justify-between font-mono text-sm">
         <span class="font-semibold tracking-tight">
@@ -59,15 +64,15 @@ const spokes = [
         <div class="flex items-center gap-5 text-faint">
           <a href="#fractal" class="transition hover:text-fg">architecture</a>
           <a href="#spokes" class="transition hover:text-fg">spokes</a>
-          <a href="#extension" class="rounded-full border border-accent-2/40 px-3 py-1 text-accent-2 transition hover:bg-accent-2/10">get the extension</a>
+          <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" class="rounded-full border border-accent-2/40 px-3 py-1 text-accent-2 transition hover:bg-accent-2/10">view the source ↗</a>
         </div>
       </nav>
     </div>
 
     <div class="relative mx-auto max-w-4xl px-6 pb-12 pt-20 text-center sm:pt-28">
-      <p class="mb-5 inline-flex items-center gap-2 rounded-full border border-border bg-surface/60 px-3 py-1 font-mono text-xs text-faint backdrop-blur-sm">
+      <p class="mb-5 inline-flex items-center gap-2 rounded-full border border-ok/40 bg-ok/10 px-3 py-1 font-mono text-xs text-ok backdrop-blur-sm">
         <span class="h-1.5 w-1.5 rounded-full bg-ok pulse-slow"></span>
-        local-first · permission-gated · open source
+        free &amp; open source · local-first · you own your data
       </p>
 
       <h1 class="text-balance text-5xl font-bold leading-[1.05] tracking-tight sm:text-7xl">
@@ -75,27 +80,34 @@ const spokes = [
       </h1>
 
       <p class="mx-auto mt-6 max-w-2xl text-balance text-lg leading-relaxed text-muted sm:text-xl">
-        The membrane at the center of your data. An open-source extension that
-        sits between every input and every tool — it
-        <span class="text-fg">encrypts your private side on-device</span>,
-        mediates the public side, and lets
-        <span class="text-fg">you decide what crosses, every time.</span>
+        A small suite of lightweight, <span class="text-fg">data-filtering browser
+        extensions and apps</span> that feed your <span class="text-fg">Vault</span> — a
+        local-first, encrypted store you fully own. Together they form
+        <span class="text-fg">the backbone of a complete personal
+        data-aggregation system.</span> The cortex is the engine in the middle.
       </p>
 
       <div class="mt-9 flex flex-wrap items-center justify-center gap-3">
-        <a href="#extension" class="rounded-full bg-accent-2 px-6 py-3 font-semibold text-bg transition hover:bg-public">
-          Get the extension
+        <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" class="rounded-full bg-accent-2 px-6 py-3 font-semibold text-bg transition hover:bg-public">
+          Get the extension ↗
         </a>
         <a href="#fractal" class="rounded-full border border-border bg-surface/60 px-6 py-3 font-medium text-fg backdrop-blur-sm transition hover:border-accent-2/50">
           See how it fits together
         </a>
+        <a href={COFFEE_URL} target="_blank" rel="noopener noreferrer" class="rounded-full border border-border bg-surface/60 px-6 py-3 font-medium text-fg backdrop-blur-sm transition hover:border-accent-2/50">
+          ☕ Buy me a coffee
+        </a>
       </div>
 
+      <p class="mx-auto mt-6 font-mono text-xs text-faint">
+        100% free and open source — every extension, the Vault, and the cortex.
+        <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" class="text-accent-2 underline-offset-2 hover:underline">github.com/me-alter ↗</a>
+      </p>
+
       <p class="mx-auto mt-10 max-w-xl font-mono text-xs leading-relaxed text-faint">
-        The membrane is not a wall — it's a selectively-permeable gate with a
-        doorman. Default-deny: nothing crosses inward to the interpreter, or
-        outward to the world, except through an explicit, scoped, revocable
-        permission.
+        The cortex is not a wall — it's a selectively-permeable gate with a
+        doorman. Default-deny: nothing reaches the Vault, or crosses outward to
+        the world, except through an explicit, scoped, revocable permission.
       </p>
     </div>
   </header>
@@ -114,28 +126,28 @@ const spokes = [
 
     <HubDiagram />
 
-    <!-- the membrane → neurotype → sociotype model -->
+    <!-- the cortex → neurotype → sociotype model -->
     <div class="mx-auto mt-14 grid max-w-4xl gap-4 sm:grid-cols-3">
       <div class="rounded-2xl border border-accent-2/30 bg-surface/60 p-5">
-        <div class="font-mono text-xs uppercase tracking-wide text-accent-2">the membrane</div>
+        <div class="font-mono text-xs uppercase tracking-wide text-accent-2">the cortex</div>
         <div class="mt-1 font-semibold">alter/me/a/i</div>
-        <p class="mt-2 text-sm text-muted">Regulates flux: capture gating, sensitivity classification, the permission gate. The only root of trust. Your raw exhaust stays on-device, behind it.</p>
+        <p class="mt-2 text-sm text-muted">The engine in the middle. The filtering extensions feed it; it gates capture, classifies sensitivity, and routes what's allowed into the Vault. The only root of trust — your raw data stays on-device, behind it.</p>
       </div>
       <div class="rounded-2xl border border-private/30 bg-surface/60 p-5">
         <div class="font-mono text-xs uppercase tracking-wide text-private">the neurotype</div>
-        <div class="mt-1 font-semibold">me-alter</div>
-        <p class="mt-2 text-sm text-muted">Aggregates and interprets what the membrane lets through into the model-of-you. How you're actually wired — the private nucleus.</p>
+        <div class="mt-1 font-semibold">my-alter</div>
+        <p class="mt-2 text-sm text-muted">Aggregates and interprets what the cortex lets through into the model-of-you. How you're actually wired — the private nucleus.</p>
       </div>
       <div class="rounded-2xl border border-public/30 bg-surface/60 p-5">
         <div class="font-mono text-xs uppercase tracking-wide text-public">the sociotype</div>
         <div class="mt-1 font-semibold">alter-me</div>
-        <p class="mt-2 text-sm text-muted">The persona expressed outward — the socially-legible face, shaped by the membrane's rules. How the world reads you.</p>
+        <p class="mt-2 text-sm text-muted">The persona expressed outward — the socially-legible face, shaped by the cortex's rules. How the world reads you.</p>
       </div>
     </div>
 
     <p class="mx-auto mt-6 max-w-3xl text-center font-mono text-xs text-faint">
       glyph key — slash <span class="text-accent-2">/</span> = the cortex at the infrastructure layer (the hub) ·
-      dash <span class="text-public">-</span> = the cortex at a user-facing surface (alter-me, me-alter)
+      dash <span class="text-public">-</span> = the cortex at a user-facing surface (alter-me, my-alter)
     </p>
   </section>
 
@@ -146,7 +158,7 @@ const spokes = [
       <p class="mt-3 max-w-2xl text-muted">
         Each vertex is the identical move at a new domain: one public-facing
         site that expresses, one private-facing site that holds — both passing
-        through the membrane, which encrypts the private side and mediates the
+        through the cortex, which encrypts the private side and mediates the
         public one.
       </p>
     </div>
@@ -159,15 +171,28 @@ const spokes = [
   <!-- ────────────────────── GET THE EXTENSION ────────────────────── -->
   <section id="extension" class="scroll-mt-12 px-6 py-16 sm:py-24">
     <div class="mx-auto max-w-3xl overflow-hidden rounded-3xl border border-accent-2/30 bg-gradient-to-b from-surface to-bg-2 p-8 text-center sm:p-12">
-      <h2 class="text-3xl font-bold tracking-tight sm:text-4xl">Get the membrane</h2>
+      <p class="mb-3 inline-flex items-center gap-2 rounded-full border border-ok/40 bg-ok/10 px-3 py-1 font-mono text-xs text-ok">
+        <span class="h-1.5 w-1.5 rounded-full bg-ok"></span>
+        Free and open source
+      </p>
+      <h2 class="text-3xl font-bold tracking-tight sm:text-4xl">Get the suite</h2>
       <p class="mx-auto mt-4 max-w-xl text-muted">
-        alter/me/a/i is the open-source extension at the center of all of this.
-        It runs locally, captures from the sources you choose, and never lets a
-        byte cross a boundary without your say-so. Install it once; it mediates
-        everything after.
+        alter/me/a/i is a small suite of lightweight, data-filtering extensions
+        and apps plus the Vault — a local-first, encrypted store you fully own.
+        They capture only from the sources you choose; the cortex gates
+        what reaches the Vault. Together they're the backbone of a complete
+        personal data-aggregation system. Free and open source, end to end.
       </p>
       <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
-        <!-- Extension isn't published yet — present but inactive, not a dead store link. -->
+        <!-- The source is public now; the packaged extension isn't on the stores yet. -->
+        <a
+          href={GITHUB_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center gap-2 rounded-full bg-accent-2 px-6 py-3 font-semibold text-bg transition hover:bg-public"
+        >
+          View the source on GitHub ↗
+        </a>
         <span
           role="button"
           aria-disabled="true"
@@ -176,8 +201,16 @@ const spokes = [
           <span class="h-2 w-2 rounded-full bg-accent-2/70"></span>
           Add to your browser — coming soon
         </span>
+        <a
+          href={COFFEE_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center gap-2 rounded-full border border-border bg-surface/60 px-6 py-3 font-medium text-fg transition hover:border-accent-2/50"
+        >
+          ☕ Buy me a coffee
+        </a>
       </div>
-      <p class="mt-5 font-mono text-xs text-faint">The extension is in development. Install links land here when it ships. Local-first, zero-network, works offline.</p>
+      <p class="mt-5 font-mono text-xs text-faint">The packaged extension is in development — store install links land here when it ships. Local-first, zero-network, works offline.</p>
     </div>
   </section>
 
@@ -187,9 +220,11 @@ const spokes = [
       <span class="font-mono">
         alter<span class="text-accent-2">/</span>me<span class="text-accent-2">/</span>a<span class="text-accent-2">/</span>i — hosted at marcoajello.ai
       </span>
-      <div class="flex items-center gap-5 font-mono">
+      <div class="flex flex-wrap items-center justify-center gap-5 font-mono">
         <span class="cursor-default text-faint/70" aria-disabled="true">alter-me.ai <span class="text-[10px] uppercase">· soon</span></span>
-        <span class="cursor-default text-faint/70" aria-disabled="true">me-alter.ai <span class="text-[10px] uppercase">· soon</span></span>
+        <span class="cursor-default text-faint/70" aria-disabled="true">my-alter.ai <span class="text-[10px] uppercase">· soon</span></span>
+        <a href="https://github.com/me-alter" target="_blank" rel="noopener noreferrer" class="transition hover:text-fg">github ↗</a>
+        <a href="https://buymeacoffee.com/marcoajello" target="_blank" rel="noopener noreferrer" class="transition hover:text-fg">buy me a coffee ↗</a>
         <a href="https://substack.com/@marcoajello" target="_blank" rel="noopener noreferrer" class="transition hover:text-fg">substack ↗</a>
       </div>
     </div>

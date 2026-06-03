@@ -2,8 +2,8 @@
 
 /*
   marcoajello.ai design tokens.
-  Derived from the Cortex "Synthwave" default skin (80s neon on deep violet):
-  the hub should feel continuous with the extension it hosts.
+  Derived from the alter/me/a/i extension's "Synthwave" default skin (80s neon
+  on deep violet): the hub should feel continuous with the suite it hosts.
 */
 @theme {
   --color-bg: #0a0712;
@@ -19,7 +19,7 @@
   /* slash = infrastructure (the hub); the violet/magenta core */
   --color-accent: #c1364a;
   --color-accent-2: #ff6b81;
-  /* the public face (alter-me) reads warm; the private hold (me-alter) reads cool */
+  /* the public face (alter-me) reads warm; the private hold (my-alter) reads cool */
   --color-public: #ff8a3d;
   --color-private: #7d72cf;
   --color-ok: #39ff14;
@@ -54,8 +54,8 @@ body {
   padding-inline: 0.04em;
 }
 
-/* faint scanline / membrane texture, very subtle */
-.membrane-grid {
+/* faint scanline / cortex texture, very subtle */
+.cortex-grid {
   background-image:
     linear-gradient(to right, color-mix(in srgb, var(--color-border) 40%, transparent) 1px, transparent 1px),
     linear-gradient(to bottom, color-mix(in srgb, var(--color-border) 40%, transparent) 1px, transparent 1px);
