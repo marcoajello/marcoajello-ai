@@ -2,21 +2,18 @@
 /*
   Hub-and-spokes as a self-similar Y-fractal with the cortex in the MIDDLE.
 
-  • The cortex (alter/me/a/i) sits at the vertical centre of the canvas.
-  • THREE spokes leave it, ALL in the cortex's hot pink (accent #ff2e88), ~120°
-    apart like a trefoil (two up legs at ±60° off vertical, one straight down):
-      ── two SOLID arms UP, forming a wide Y, to the two real vertices:
-           up-left  → Heuristics / Learning   (in progress)
-           up-right → Personae / Vault         (live)
-      ── one DOTTED arm straight DOWN to Gaming / Health (planned), which keeps
-         forking the same Y in progressively fainter dotted branches — growth
-         fading downward into infinity.
-  • Each UP vertex forks the identical Y into a public (warm, left) and private
-    (cool, right) leaf, drawn SOLID — these are built / in progress.
-  • Gaming forks the same way into render (public) / hold (private), but
-    dotted + faded, because downward is the unbuilt growth direction.
+  • The cortex (alter/me/a/i) sits at the centre, hot pink (accent #ff2e88).
+  • THREE pink spokes leave it, ~120° apart (trefoil): two SOLID up legs at ±60°
+    off vertical form a wide Y to the live vertices; one DOTTED leg straight down
+    to Gaming / Health keeps forking into fainter dotted branches — growth fading
+    into infinity, downward.
+  • Each UP vertex forks into a public (warm, left) and private (cool, right)
+    leaf, SOLID. Gaming forks the same way but dotted + faded.
 
-  Two renderings of the one rule: a wide version ≥sm, a tall narrow one <sm.
+  The viewBox for each breakpoint is computed from the actual content bounding
+  box (labels included) so the figure always fills its frame — no floating in a
+  void. Desktop is a wide-ish compact figure; mobile is a tall narrow column
+  with a narrower fork + two-line vertex labels so nothing overlaps at ~360px.
 */
 type Status = "built" | "soon" | "concept";
 type Vertex = { label: string; status: Status; public: string; private: string };
@@ -36,99 +33,155 @@ const statusColor: Record<Status, string> = {
 };
 const statusLabel: Record<Status, string> = { built: "live", soon: "in progress", concept: "planned" };
 
-// ── The universal leaf-fork: 30° off vertical, each level 0.6× the last. ──
-const FORK_DEG = 30;
-const SIN = Math.sin((FORK_DEG * Math.PI) / 180); // 0.5
-const COS = Math.cos((FORK_DEG * Math.PI) / 180); // 0.866…
 const RATIO = 0.6;
+const d2r = (d: number) => (d * Math.PI) / 180;
 
-// ── The cortex's own three spokes splay ~120° apart (trefoil): the two up
-//    legs sit at ±60° off vertical, the down leg points straight down. ──
-const SPOKE_DEG = 60;
-const SSIN = Math.sin((SPOKE_DEG * Math.PI) / 180); // 0.866…
-const SCOS = Math.cos((SPOKE_DEG * Math.PI) / 180); // 0.5
-
+type Pt = { x: number; y: number };
 type Seg = { x1: number; y1: number; x2: number; y2: number; w: number; o: number };
+type Box = { x0: number; x1: number; y0: number; y1: number };
+
+// Mono advance is ~0.6em; 0.62 over-estimates slightly so the viewBox never clips a label.
+const CW = 0.62;
+const txtBox = (x: number, y: number, str: string, fs: number, anchor: "middle" | "start" | "end"): Box => {
+  const w = str.length * fs * CW;
+  const x0 = anchor === "middle" ? x - w / 2 : anchor === "start" ? x : x - w;
+  return { x0, x1: x0 + w, y0: y - 0.8 * fs, y1: y + 0.22 * fs };
+};
 
 // A point reached by forking from (x,y): signX = -1 left / +1 right, dir = -1 up / +1 down.
-const armPt = (x: number, y: number, len: number, signX: -1 | 1, dir: -1 | 1) => ({
-  x: x + signX * len * SIN,
-  y: y + dir * len * COS,
+const armPt = (x: number, y: number, len: number, signX: -1 | 1, dir: -1 | 1, fs: number, fc: number): Pt => ({
+  x: x + signX * len * fs,
+  y: y + dir * len * fc,
 });
 
 // The faded, unlabelled continuation of the SAME Y, scaled down each level.
-function fadedTree(x: number, y: number, len: number, dir: -1 | 1, depth: number, level = 0): Seg[] {
+function fadedTree(x: number, y: number, len: number, dir: -1 | 1, depth: number, fs: number, fc: number, level = 0): Seg[] {
   if (depth <= 0) return [];
-  const l = armPt(x, y, len, -1, dir);
-  const r = armPt(x, y, len, 1, dir);
+  const l = armPt(x, y, len, -1, dir, fs, fc);
+  const r = armPt(x, y, len, 1, dir, fs, fc);
   const w = Math.max(0.7, 1.5 * Math.pow(RATIO, level));
   const o = 0.32 * Math.pow(0.58, level);
   return [
     { x1: x, y1: y, x2: l.x, y2: l.y, w, o },
     { x1: x, y1: y, x2: r.x, y2: r.y, w, o },
-    ...fadedTree(l.x, l.y, len * RATIO, dir, depth - 1, level + 1),
-    ...fadedTree(r.x, r.y, len * RATIO, dir, depth - 1, level + 1),
+    ...fadedTree(l.x, l.y, len * RATIO, dir, depth - 1, fs, fc, level + 1),
+    ...fadedTree(r.x, r.y, len * RATIO, dir, depth - 1, fs, fc, level + 1),
   ];
 }
 
-// Build an upward vertex (cortex → up to vertex → forks up into public/private leaves).
-function upVertex(v: Vertex, side: -1 | 1, cx: number, cy: number, LV: number, LB: number) {
-  const vx = cx + side * LV * SSIN; // spoke at ±60° off vertical
-  const vy = cy - LV * SCOS;
-  return { v, side, vx, vy, pub: armPt(vx, vy, LB, -1, -1), priv: armPt(vx, vy, LB, 1, -1) };
-}
-// Build the downward vertex (cortex → straight down → forks down, then fades to infinity).
-function downVertex(v: Vertex, cx: number, cy: number, LV: number, LB: number, depth: number) {
-  const vx = cx;
-  const vy = cy + LV;
-  const pub = armPt(vx, vy, LB, -1, 1);
-  const priv = armPt(vx, vy, LB, 1, 1);
+type Cfg = {
+  cx: number; cy: number;
+  spokeDeg: number; forkDeg: number;
+  LVu: number; LBu: number; LVd: number; LBd: number; fade: number;
+  glow: number;
+  vfont: number; sfont: number; lfont: number; cfont: number;
+  caps: boolean; twoLine: boolean; margin: number;
+};
+
+function layout(cfg: Cfg) {
+  const { cx, cy, spokeDeg, forkDeg } = cfg;
+  const ss = Math.sin(d2r(spokeDeg)), sc = Math.cos(d2r(spokeDeg));
+  const fs = Math.sin(d2r(forkDeg)), fc = Math.cos(d2r(forkDeg));
+
+  const up = [
+    { v: heuristics, side: -1 as const },
+    { v: personae, side: 1 as const },
+  ].map(({ v, side }) => {
+    const vx = cx + side * cfg.LVu * ss;
+    const vy = cy - cfg.LVu * sc;
+    return {
+      v, side, vx, vy,
+      pub: armPt(vx, vy, cfg.LBu, -1, -1, fs, fc),
+      priv: armPt(vx, vy, cfg.LBu, 1, -1, fs, fc),
+    };
+  });
+
+  const gx = cx, gy = cy + cfg.LVd;
+  const gpub = armPt(gx, gy, cfg.LBd, -1, 1, fs, fc);
+  const gpriv = armPt(gx, gy, cfg.LBd, 1, 1, fs, fc);
   const faded = [
-    ...fadedTree(pub.x, pub.y, LB * RATIO, 1, depth),
-    ...fadedTree(priv.x, priv.y, LB * RATIO, 1, depth),
+    ...fadedTree(gpub.x, gpub.y, cfg.LBd * RATIO, 1, cfg.fade, fs, fc),
+    ...fadedTree(gpriv.x, gpriv.y, cfg.LBd * RATIO, 1, cfg.fade, fs, fc),
   ];
-  return { v, vx, vy, pub, priv, faded };
+  const down = { v: gaming, gx, gy, pub: gpub, priv: gpriv, faded };
+
+  // ── Build the bounding box from everything that gets drawn (labels included) ──
+  const ext: Box[] = [];
+  const addPt = (x: number, y: number, r = 0) => ext.push({ x0: x - r, x1: x + r, y0: y - r, y1: y + r });
+  const addTx = (b: Box) => ext.push(b);
+
+  addPt(cx, cy, cfg.glow); // cortex glow
+
+  for (const d of up) {
+    addPt(d.vx, d.vy, 7);
+    addPt(d.pub.x, d.pub.y, 6);
+    addPt(d.priv.x, d.priv.y, 6);
+    addTx(txtBox(d.pub.x, d.pub.y - (cfg.caps ? 20 : 11), d.v.public, cfg.lfont, "middle"));
+    addTx(txtBox(d.priv.x, d.priv.y - (cfg.caps ? 20 : 11), d.v.private, cfg.lfont, "middle"));
+    if (cfg.caps) {
+      addTx(txtBox(d.pub.x, d.pub.y - 9, "public", cfg.cfont, "middle"));
+      addTx(txtBox(d.priv.x, d.priv.y - 9, "private", cfg.cfont, "middle"));
+    }
+    const anchor = d.side < 0 ? "end" : "start";
+    const lx = d.vx + d.side * 13;
+    if (cfg.twoLine) {
+      const [a, b] = d.v.label.split(" / ");
+      addTx(txtBox(lx, d.vy - 3, a + " /", cfg.vfont, anchor));
+      addTx(txtBox(lx, d.vy + cfg.vfont + 1, b, cfg.vfont, anchor));
+      addTx(txtBox(lx, d.vy + 2 * cfg.vfont + 3, statusLabel[d.v.status].toUpperCase(), cfg.sfont, anchor));
+    } else {
+      addTx(txtBox(lx, d.vy + 1, d.v.label, cfg.vfont, anchor));
+      addTx(txtBox(lx, d.vy + 15, statusLabel[d.v.status].toUpperCase(), cfg.sfont, anchor));
+    }
+  }
+
+  addPt(gx, gy, 7);
+  addPt(gpub.x, gpub.y, 6);
+  addPt(gpriv.x, gpriv.y, 6);
+  addTx(txtBox(gpub.x, gpub.y + (cfg.caps ? 18 : 13), gaming.public, cfg.lfont, "middle"));
+  addTx(txtBox(gpriv.x, gpriv.y + (cfg.caps ? 18 : 13), gaming.private, cfg.lfont, "middle"));
+  if (cfg.caps) {
+    addTx(txtBox(gpub.x, gpub.y + 30, "public", cfg.cfont, "middle"));
+    addTx(txtBox(gpriv.x, gpriv.y + 30, "private", cfg.cfont, "middle"));
+  }
+  addTx(txtBox(gx + 13, gy + 1, gaming.label, cfg.vfont, "start"));
+  addTx(txtBox(gx + 13, gy + 15, statusLabel[gaming.status].toUpperCase(), cfg.sfont, "start"));
+  for (const s of faded) { addPt(s.x2, s.y2); }
+
+  const minX = Math.min(...ext.map((b) => b.x0));
+  const maxX = Math.max(...ext.map((b) => b.x1));
+  const minY = Math.min(...ext.map((b) => b.y0));
+  const maxY = Math.max(...ext.map((b) => b.y1));
+  const m = cfg.margin;
+  // keep the cortex horizontally centred: pad the narrower side to match the wider
+  const halfW = Math.max(cx - minX, maxX - cx) + m;
+  const vbX = cx - halfW;
+  const vbW = 2 * halfW;
+  const vbY = minY - m;
+  const vbH = maxY + m - vbY;
+  const viewBox = `${vbX.toFixed(1)} ${vbY.toFixed(1)} ${vbW.toFixed(1)} ${vbH.toFixed(1)}`;
+
+  return { up, down, viewBox, cfg };
 }
 
-// ───────────── Desktop / tablet: cortex centred, Y up, fade down ─────────────
-const DW = 940;
-const DH = 690;
-const dcx = DW / 2;
-const dcy = DH / 2; // cortex exactly vertically centred
-const D_LVu = 240; // cortex → up vertex (the wide ±60° legs)
-const D_LBu = 92; // up vertex → leaf
-const D_LVd = 164; // cortex → down vertex (straight down)
-const D_LBd = 88; // down vertex → leaf
-const D_FADE = 3; // fainter dotted forks below, fading to infinity
-
-const dHeur = upVertex(heuristics, -1, dcx, dcy, D_LVu, D_LBu); // up-left
-const dPers = upVertex(personae, 1, dcx, dcy, D_LVu, D_LBu); // up-right
-const dGame = downVertex(gaming, dcx, dcy, D_LVd, D_LBd, D_FADE); // down
-const dUp = [dHeur, dPers];
-
-// ───────────── Mobile: same idea, narrow + tall ─────────────
-const MW = 380;
-const MH = 480;
-const mcx = MW / 2;
-const mcy = MH / 2; // cortex exactly vertically centred
-const M_LVu = 98; // narrower ±60° legs so the wide Y + labels fit 380px
-const M_LBu = 56;
-const M_LVd = 120;
-const M_LBd = 54;
-const M_FADE = 3;
-
-const mHeur = upVertex(heuristics, -1, mcx, mcy, M_LVu, M_LBu);
-const mPers = upVertex(personae, 1, mcx, mcy, M_LVu, M_LBu);
-const mGame = downVertex(gaming, mcx, mcy, M_LVd, M_LBd, M_FADE);
-const mUp = [mHeur, mPers];
+const D = layout({
+  cx: 500, cy: 330, spokeDeg: 60, forkDeg: 30,
+  LVu: 158, LBu: 78, LVd: 120, LBd: 78, fade: 3, glow: 62,
+  vfont: 13, sfont: 9.5, lfont: 12.5, cfont: 9.5, caps: true, twoLine: false, margin: 26,
+});
+const M = layout({
+  cx: 190, cy: 250, spokeDeg: 38, forkDeg: 28,
+  LVu: 150, LBu: 64, LVd: 135, LBd: 62, fade: 3, glow: 42,
+  vfont: 11, sfont: 8.5, lfont: 11.5, cfont: 8.5, caps: false, twoLine: true, margin: 18,
+});
 ---
 
 <figure
-  class="mx-auto w-full max-w-3xl"
+  class="mx-auto w-full max-w-2xl"
   aria-label="alter/me/a/i (the cortex) sits at the centre. Three pink spokes leave it: two solid arms up form a Y to the built vertices Personae / Vault (live) and Heuristics / Learning (in progress), each forking into a public and a private leaf; one dotted arm goes down to the planned Gaming / Health vertex and keeps forking into ever-fainter dotted branches — growth fading downward into infinity."
 >
-  {/* ════════ MOBILE (<sm) ════════ */}
-  <svg viewBox={`0 0 ${MW} ${MH}`} class="block h-auto w-full sm:hidden" role="img">
+  {/* ════════ MOBILE (<sm): narrow column, narrower fork, two-line vertex labels ════════ */}
+  <svg viewBox={M.viewBox} class="block h-auto w-full sm:hidden" role="img">
     <defs>
       <radialGradient id="coreGlowM" cx="50%" cy="50%" r="50%">
         <stop offset="0%" stop-color="#ff5ea8" stop-opacity="0.9"></stop>
@@ -141,68 +194,63 @@ const mUp = [mHeur, mPers];
     </defs>
 
     {/* faded growth, fading downward (behind everything) */}
-    {mGame.faded.map((s) => (
+    {M.down.faded.map((s) => (
       <line x1={s.x1} y1={s.y1} x2={s.x2} y2={s.y2} stroke="var(--color-faint)" stroke-width={s.w} stroke-linecap="round" stroke-dasharray={DOTS} opacity={s.o}></line>
     ))}
 
-    {/* the three center spokes — ALL pink; two solid up, one dotted down */}
-    <line x1={mcx} y1={mcy} x2={mHeur.vx} y2={mHeur.vy} stroke={PINK} stroke-width="2.5" stroke-linecap="round" stroke-dasharray={SOLID} opacity="0.95"></line>
-    <line x1={mcx} y1={mcy} x2={mPers.vx} y2={mPers.vy} stroke={PINK} stroke-width="2.5" stroke-linecap="round" stroke-dasharray={SOLID} opacity="0.95"></line>
-    <line x1={mcx} y1={mcy} x2={mGame.vx} y2={mGame.vy} stroke={PINK} stroke-width="2.5" stroke-linecap="round" stroke-dasharray={DOTS} opacity="0.7"></line>
+    {/* three pink center spokes — two solid up, one dotted down */}
+    <line x1={190} y1={250} x2={M.up[0].vx} y2={M.up[0].vy} stroke={PINK} stroke-width="2.5" stroke-linecap="round" stroke-dasharray={SOLID} opacity="0.95"></line>
+    <line x1={190} y1={250} x2={M.up[1].vx} y2={M.up[1].vy} stroke={PINK} stroke-width="2.5" stroke-linecap="round" stroke-dasharray={SOLID} opacity="0.95"></line>
+    <line x1={190} y1={250} x2={M.down.gx} y2={M.down.gy} stroke={PINK} stroke-width="2.5" stroke-linecap="round" stroke-dasharray={DOTS} opacity="0.7"></line>
 
     {/* upward vertices: solid Y into public (left) / private (right) leaves */}
-    {mUp.map((d) => {
+    {M.up.map((d) => {
       const c = statusColor[d.v.status];
       const anchor = d.side < 0 ? "end" : "start";
       const lx = d.vx + d.side * 13;
+      const [la, lb] = d.v.label.split(" / ");
       return (
         <g>
           <line x1={d.vx} y1={d.vy} x2={d.pub.x} y2={d.pub.y} stroke="var(--color-public)" stroke-width="2" stroke-linecap="round" opacity="0.95"></line>
           <line x1={d.vx} y1={d.vy} x2={d.priv.x} y2={d.priv.y} stroke="var(--color-private)" stroke-width="2" stroke-linecap="round" opacity="0.95"></line>
 
-          {/* public leaf */}
           <circle cx={d.pub.x} cy={d.pub.y} r="5.5" fill="var(--color-public)"></circle>
-          <text x={d.pub.x} y={d.pub.y - 20} text-anchor="middle" fill="var(--color-public)" font-family="var(--font-mono)" font-size="12" font-weight="600">{d.v.public}</text>
-          <text x={d.pub.x} y={d.pub.y - 9} text-anchor="middle" fill="var(--color-faint)" font-family="var(--font-mono)" font-size="8.5">public</text>
-          {/* private leaf */}
+          <text x={d.pub.x} y={d.pub.y - 11} text-anchor="middle" fill="var(--color-public)" font-family="var(--font-mono)" font-size="11.5" font-weight="600">{d.v.public}</text>
           <circle cx={d.priv.x} cy={d.priv.y} r="5.5" fill="var(--color-private)"></circle>
-          <text x={d.priv.x} y={d.priv.y - 20} text-anchor="middle" fill="var(--color-private)" font-family="var(--font-mono)" font-size="12" font-weight="600">{d.v.private}</text>
-          <text x={d.priv.x} y={d.priv.y - 9} text-anchor="middle" fill="var(--color-faint)" font-family="var(--font-mono)" font-size="8.5">private</text>
+          <text x={d.priv.x} y={d.priv.y - 11} text-anchor="middle" fill="var(--color-private)" font-family="var(--font-mono)" font-size="11.5" font-weight="600">{d.v.private}</text>
 
-          {/* vertex node + label on the outer side */}
           <circle cx={d.vx} cy={d.vy} r="6" fill="var(--color-surface-2)" stroke={c} stroke-width="2"></circle>
-          <text x={lx} y={d.vy + 1} text-anchor={anchor} fill="var(--color-fg)" font-family="var(--font-sans)" font-size="11" font-weight="600">{d.v.label}</text>
-          <text x={lx} y={d.vy + 13} text-anchor={anchor} fill={c} font-family="var(--font-mono)" font-size="8.5" letter-spacing="0.05em">{statusLabel[d.v.status].toUpperCase()}</text>
+          <text x={lx} y={d.vy - 3} text-anchor={anchor} fill="var(--color-fg)" font-family="var(--font-mono)" font-size="11" font-weight="600">{la + " /"}</text>
+          <text x={lx} y={d.vy + 12} text-anchor={anchor} fill="var(--color-fg)" font-family="var(--font-mono)" font-size="11" font-weight="600">{lb}</text>
+          <text x={lx} y={d.vy + 25} text-anchor={anchor} fill={c} font-family="var(--font-mono)" font-size="8.5" letter-spacing="0.05em">{statusLabel[d.v.status].toUpperCase()}</text>
         </g>
       );
     })}
 
     {/* downward vertex: dotted/faded Y into render / hold, then fading onward */}
     <g>
-      <line x1={mGame.vx} y1={mGame.vy} x2={mGame.pub.x} y2={mGame.pub.y} stroke="var(--color-public)" stroke-width="2" stroke-linecap="round" stroke-dasharray={DOTS} opacity="0.6"></line>
-      <line x1={mGame.vx} y1={mGame.vy} x2={mGame.priv.x} y2={mGame.priv.y} stroke="var(--color-private)" stroke-width="2" stroke-linecap="round" stroke-dasharray={DOTS} opacity="0.6"></line>
+      <line x1={M.down.gx} y1={M.down.gy} x2={M.down.pub.x} y2={M.down.pub.y} stroke="var(--color-public)" stroke-width="2" stroke-linecap="round" stroke-dasharray={DOTS} opacity="0.6"></line>
+      <line x1={M.down.gx} y1={M.down.gy} x2={M.down.priv.x} y2={M.down.priv.y} stroke="var(--color-private)" stroke-width="2" stroke-linecap="round" stroke-dasharray={DOTS} opacity="0.6"></line>
 
-      <circle cx={mGame.pub.x} cy={mGame.pub.y} r="5" fill="var(--color-public)" opacity="0.85"></circle>
-      <text x={mGame.pub.x} y={mGame.pub.y + 16} text-anchor="middle" fill="var(--color-public)" font-family="var(--font-mono)" font-size="11.5" font-weight="600" opacity="0.9">{gaming.public}</text>
-      <text x={mGame.pub.x} y={mGame.pub.y + 27} text-anchor="middle" fill="var(--color-faint)" font-family="var(--font-mono)" font-size="8.5">public</text>
-      <circle cx={mGame.priv.x} cy={mGame.priv.y} r="5" fill="var(--color-private)" opacity="0.85"></circle>
-      <text x={mGame.priv.x} y={mGame.priv.y + 16} text-anchor="middle" fill="var(--color-private)" font-family="var(--font-mono)" font-size="11.5" font-weight="600" opacity="0.9">{gaming.private}</text>
-      <text x={mGame.priv.x} y={mGame.priv.y + 27} text-anchor="middle" fill="var(--color-faint)" font-family="var(--font-mono)" font-size="8.5">private</text>
+      <circle cx={M.down.pub.x} cy={M.down.pub.y} r="5" fill="var(--color-public)" opacity="0.85"></circle>
+      <text x={M.down.pub.x} y={M.down.pub.y + 13} text-anchor="middle" fill="var(--color-public)" font-family="var(--font-mono)" font-size="11.5" font-weight="600" opacity="0.9">{gaming.public}</text>
+      <circle cx={M.down.priv.x} cy={M.down.priv.y} r="5" fill="var(--color-private)" opacity="0.85"></circle>
+      <text x={M.down.priv.x} y={M.down.priv.y + 13} text-anchor="middle" fill="var(--color-private)" font-family="var(--font-mono)" font-size="11.5" font-weight="600" opacity="0.9">{gaming.private}</text>
 
-      <circle cx={mGame.vx} cy={mGame.vy} r="6" fill="var(--color-surface-2)" stroke={statusColor[gaming.status]} stroke-width="2"></circle>
-      <text x={mGame.vx + 13} y={mGame.vy + 1} text-anchor="start" fill="var(--color-fg)" font-family="var(--font-sans)" font-size="11" font-weight="600">{gaming.label}</text>
-      <text x={mGame.vx + 13} y={mGame.vy + 13} text-anchor="start" fill={statusColor[gaming.status]} font-family="var(--font-mono)" font-size="8.5" letter-spacing="0.05em">{statusLabel[gaming.status].toUpperCase()}</text>
+      <circle cx={M.down.gx} cy={M.down.gy} r="6" fill="var(--color-surface-2)" stroke={statusColor[gaming.status]} stroke-width="2"></circle>
+      <text x={M.down.gx + 13} y={M.down.gy + 1} text-anchor="start" fill="var(--color-fg)" font-family="var(--font-mono)" font-size="11" font-weight="600">{gaming.label}</text>
+      <text x={M.down.gx + 13} y={M.down.gy + 14} text-anchor="start" fill={statusColor[gaming.status]} font-family="var(--font-mono)" font-size="8.5" letter-spacing="0.05em">{statusLabel[gaming.status].toUpperCase()}</text>
     </g>
 
     {/* the cortex, glowing, at the centre */}
-    <circle cx={mcx} cy={mcy} r="42" fill="url(#coreGlowM)" filter="url(#softM)" opacity="0.55" class="pulse-slow"></circle>
-    <circle cx={mcx} cy={mcy} r="34" fill="var(--color-bg-2)" stroke="var(--color-accent)" stroke-width="2"></circle>
-    <text x={mcx} y={mcy - 2} text-anchor="middle" fill="var(--color-fg)" font-family="var(--font-sans)" font-size="14" font-weight="700">alter<tspan fill="var(--color-accent)">/</tspan>me<tspan fill="var(--color-accent)">/</tspan>a<tspan fill="var(--color-accent)">/</tspan>i</text>
-    <text x={mcx} y={mcy + 13} text-anchor="middle" fill="var(--color-faint)" font-family="var(--font-mono)" font-size="9.5">the cortex</text>
+    <circle cx={190} cy={250} r="42" fill="url(#coreGlowM)" filter="url(#softM)" opacity="0.55" class="pulse-slow"></circle>
+    <circle cx={190} cy={250} r="34" fill="var(--color-bg-2)" stroke="var(--color-accent)" stroke-width="2"></circle>
+    <text x={190} y={248} text-anchor="middle" fill="var(--color-fg)" font-family="var(--font-mono)" font-size="14" font-weight="700">alter<tspan fill="var(--color-accent)">/</tspan>me<tspan fill="var(--color-accent)">/</tspan>a<tspan fill="var(--color-accent)">/</tspan>i</text>
+    <text x={190} y={263} text-anchor="middle" fill="var(--color-faint)" font-family="var(--font-mono)" font-size="9.5">the cortex</text>
   </svg>
 
-  {/* ════════ DESKTOP / TABLET (≥sm) ════════ */}
-  <svg viewBox={`0 0 ${DW} ${DH}`} class="hidden h-auto w-full sm:block" role="img">
+  {/* ════════ DESKTOP / TABLET (≥sm): compact wide figure ════════ */}
+  <svg viewBox={D.viewBox} class="hidden h-auto w-full sm:block" role="img">
     <defs>
       <radialGradient id="coreGlow" cx="50%" cy="50%" r="50%">
         <stop offset="0%" stop-color="#ff5ea8" stop-opacity="0.9"></stop>
@@ -215,17 +263,17 @@ const mUp = [mHeur, mPers];
     </defs>
 
     {/* faded growth, fading downward into infinity (behind everything) */}
-    {dGame.faded.map((s) => (
+    {D.down.faded.map((s) => (
       <line x1={s.x1} y1={s.y1} x2={s.x2} y2={s.y2} stroke="var(--color-faint)" stroke-width={s.w} stroke-linecap="round" stroke-dasharray={DOTS} opacity={s.o}></line>
     ))}
 
-    {/* the three center spokes — ALL pink; two solid up (the Y), one dotted down */}
-    <line x1={dcx} y1={dcy} x2={dHeur.vx} y2={dHeur.vy} stroke={PINK} stroke-width="2.5" stroke-linecap="round" stroke-dasharray={SOLID} opacity="0.95"></line>
-    <line x1={dcx} y1={dcy} x2={dPers.vx} y2={dPers.vy} stroke={PINK} stroke-width="2.5" stroke-linecap="round" stroke-dasharray={SOLID} opacity="0.95"></line>
-    <line x1={dcx} y1={dcy} x2={dGame.vx} y2={dGame.vy} stroke={PINK} stroke-width="2.5" stroke-linecap="round" stroke-dasharray={DOTS} opacity="0.7"></line>
+    {/* three pink center spokes — two solid up (the Y), one dotted down */}
+    <line x1={500} y1={330} x2={D.up[0].vx} y2={D.up[0].vy} stroke={PINK} stroke-width="2.5" stroke-linecap="round" stroke-dasharray={SOLID} opacity="0.95"></line>
+    <line x1={500} y1={330} x2={D.up[1].vx} y2={D.up[1].vy} stroke={PINK} stroke-width="2.5" stroke-linecap="round" stroke-dasharray={SOLID} opacity="0.95"></line>
+    <line x1={500} y1={330} x2={D.down.gx} y2={D.down.gy} stroke={PINK} stroke-width="2.5" stroke-linecap="round" stroke-dasharray={DOTS} opacity="0.7"></line>
 
     {/* upward vertices: solid Y into public (left) / private (right) leaves */}
-    {dUp.map((d) => {
+    {D.up.map((d) => {
       const c = statusColor[d.v.status];
       const anchor = d.side < 0 ? "end" : "start";
       const lx = d.vx + d.side * 14;
@@ -234,44 +282,41 @@ const mUp = [mHeur, mPers];
           <line x1={d.vx} y1={d.vy} x2={d.pub.x} y2={d.pub.y} stroke="var(--color-public)" stroke-width="2.25" stroke-linecap="round" opacity="0.95"></line>
           <line x1={d.vx} y1={d.vy} x2={d.priv.x} y2={d.priv.y} stroke="var(--color-private)" stroke-width="2.25" stroke-linecap="round" opacity="0.95"></line>
 
-          {/* public leaf */}
           <circle cx={d.pub.x} cy={d.pub.y} r="6" fill="var(--color-public)"></circle>
-          <text x={d.pub.x} y={d.pub.y - 22} text-anchor="middle" fill="var(--color-public)" font-family="var(--font-mono)" font-size="13" font-weight="600">{d.v.public}</text>
+          <text x={d.pub.x} y={d.pub.y - 20} text-anchor="middle" fill="var(--color-public)" font-family="var(--font-mono)" font-size="12.5" font-weight="600">{d.v.public}</text>
           <text x={d.pub.x} y={d.pub.y - 9} text-anchor="middle" fill="var(--color-faint)" font-family="var(--font-mono)" font-size="9.5">public</text>
-          {/* private leaf */}
           <circle cx={d.priv.x} cy={d.priv.y} r="6" fill="var(--color-private)"></circle>
-          <text x={d.priv.x} y={d.priv.y - 22} text-anchor="middle" fill="var(--color-private)" font-family="var(--font-mono)" font-size="13" font-weight="600">{d.v.private}</text>
+          <text x={d.priv.x} y={d.priv.y - 20} text-anchor="middle" fill="var(--color-private)" font-family="var(--font-mono)" font-size="12.5" font-weight="600">{d.v.private}</text>
           <text x={d.priv.x} y={d.priv.y - 9} text-anchor="middle" fill="var(--color-faint)" font-family="var(--font-mono)" font-size="9.5">private</text>
 
-          {/* vertex node + label on the outer side (clear of the spokes) */}
           <circle cx={d.vx} cy={d.vy} r="7" fill="var(--color-surface-2)" stroke={c} stroke-width="2"></circle>
-          <text x={lx} y={d.vy + 1} text-anchor={anchor} fill="var(--color-fg)" font-family="var(--font-sans)" font-size="14" font-weight="600">{d.v.label}</text>
-          <text x={lx} y={d.vy + 15} text-anchor={anchor} fill={c} font-family="var(--font-mono)" font-size="10" letter-spacing="0.05em">{statusLabel[d.v.status].toUpperCase()}</text>
+          <text x={lx} y={d.vy + 1} text-anchor={anchor} fill="var(--color-fg)" font-family="var(--font-mono)" font-size="13" font-weight="600">{d.v.label}</text>
+          <text x={lx} y={d.vy + 15} text-anchor={anchor} fill={c} font-family="var(--font-mono)" font-size="9.5" letter-spacing="0.05em">{statusLabel[d.v.status].toUpperCase()}</text>
         </g>
       );
     })}
 
     {/* downward vertex: dotted/faded Y into render / hold (the growth direction) */}
     <g>
-      <line x1={dGame.vx} y1={dGame.vy} x2={dGame.pub.x} y2={dGame.pub.y} stroke="var(--color-public)" stroke-width="2.25" stroke-linecap="round" stroke-dasharray={DOTS} opacity="0.6"></line>
-      <line x1={dGame.vx} y1={dGame.vy} x2={dGame.priv.x} y2={dGame.priv.y} stroke="var(--color-private)" stroke-width="2.25" stroke-linecap="round" stroke-dasharray={DOTS} opacity="0.6"></line>
+      <line x1={D.down.gx} y1={D.down.gy} x2={D.down.pub.x} y2={D.down.pub.y} stroke="var(--color-public)" stroke-width="2.25" stroke-linecap="round" stroke-dasharray={DOTS} opacity="0.6"></line>
+      <line x1={D.down.gx} y1={D.down.gy} x2={D.down.priv.x} y2={D.down.priv.y} stroke="var(--color-private)" stroke-width="2.25" stroke-linecap="round" stroke-dasharray={DOTS} opacity="0.6"></line>
 
-      <circle cx={dGame.pub.x} cy={dGame.pub.y} r="5.5" fill="var(--color-public)" opacity="0.85"></circle>
-      <text x={dGame.pub.x} y={dGame.pub.y + 18} text-anchor="middle" fill="var(--color-public)" font-family="var(--font-mono)" font-size="12.5" font-weight="600" opacity="0.9">{gaming.public}</text>
-      <text x={dGame.pub.x} y={dGame.pub.y + 30} text-anchor="middle" fill="var(--color-faint)" font-family="var(--font-mono)" font-size="9.5">public</text>
-      <circle cx={dGame.priv.x} cy={dGame.priv.y} r="5.5" fill="var(--color-private)" opacity="0.85"></circle>
-      <text x={dGame.priv.x} y={dGame.priv.y + 18} text-anchor="middle" fill="var(--color-private)" font-family="var(--font-mono)" font-size="12.5" font-weight="600" opacity="0.9">{gaming.private}</text>
-      <text x={dGame.priv.x} y={dGame.priv.y + 30} text-anchor="middle" fill="var(--color-faint)" font-family="var(--font-mono)" font-size="9.5">private</text>
+      <circle cx={D.down.pub.x} cy={D.down.pub.y} r="5.5" fill="var(--color-public)" opacity="0.85"></circle>
+      <text x={D.down.pub.x} y={D.down.pub.y + 18} text-anchor="middle" fill="var(--color-public)" font-family="var(--font-mono)" font-size="12.5" font-weight="600" opacity="0.9">{gaming.public}</text>
+      <text x={D.down.pub.x} y={D.down.pub.y + 30} text-anchor="middle" fill="var(--color-faint)" font-family="var(--font-mono)" font-size="9.5">public</text>
+      <circle cx={D.down.priv.x} cy={D.down.priv.y} r="5.5" fill="var(--color-private)" opacity="0.85"></circle>
+      <text x={D.down.priv.x} y={D.down.priv.y + 18} text-anchor="middle" fill="var(--color-private)" font-family="var(--font-mono)" font-size="12.5" font-weight="600" opacity="0.9">{gaming.private}</text>
+      <text x={D.down.priv.x} y={D.down.priv.y + 30} text-anchor="middle" fill="var(--color-faint)" font-family="var(--font-mono)" font-size="9.5">private</text>
 
-      <circle cx={dGame.vx} cy={dGame.vy} r="7" fill="var(--color-surface-2)" stroke={statusColor[gaming.status]} stroke-width="2"></circle>
-      <text x={dGame.vx + 14} y={dGame.vy + 1} text-anchor="start" fill="var(--color-fg)" font-family="var(--font-sans)" font-size="14" font-weight="600">{gaming.label}</text>
-      <text x={dGame.vx + 14} y={dGame.vy + 15} text-anchor="start" fill={statusColor[gaming.status]} font-family="var(--font-mono)" font-size="10" letter-spacing="0.05em">{statusLabel[gaming.status].toUpperCase()}</text>
+      <circle cx={D.down.gx} cy={D.down.gy} r="7" fill="var(--color-surface-2)" stroke={statusColor[gaming.status]} stroke-width="2"></circle>
+      <text x={D.down.gx + 14} y={D.down.gy + 1} text-anchor="start" fill="var(--color-fg)" font-family="var(--font-mono)" font-size="13" font-weight="600">{gaming.label}</text>
+      <text x={D.down.gx + 14} y={D.down.gy + 15} text-anchor="start" fill={statusColor[gaming.status]} font-family="var(--font-mono)" font-size="9.5" letter-spacing="0.05em">{statusLabel[gaming.status].toUpperCase()}</text>
     </g>
 
     {/* the cortex, glowing, at the centre */}
-    <circle cx={dcx} cy={dcy} r="62" fill="url(#coreGlow)" filter="url(#soft)" opacity="0.55" class="pulse-slow"></circle>
-    <circle cx={dcx} cy={dcy} r="45" fill="var(--color-bg-2)" stroke="var(--color-accent)" stroke-width="2"></circle>
-    <text x={dcx} y={dcy - 4} text-anchor="middle" fill="var(--color-fg)" font-family="var(--font-sans)" font-size="16" font-weight="700">alter<tspan fill="var(--color-accent)">/</tspan>me<tspan fill="var(--color-accent)">/</tspan>a<tspan fill="var(--color-accent)">/</tspan>i</text>
-    <text x={dcx} y={dcy + 15} text-anchor="middle" fill="var(--color-faint)" font-family="var(--font-mono)" font-size="10.5">the cortex</text>
+    <circle cx={500} cy={330} r="62" fill="url(#coreGlow)" filter="url(#soft)" opacity="0.55" class="pulse-slow"></circle>
+    <circle cx={500} cy={330} r="45" fill="var(--color-bg-2)" stroke="var(--color-accent)" stroke-width="2"></circle>
+    <text x={500} y={326} text-anchor="middle" fill="var(--color-fg)" font-family="var(--font-mono)" font-size="16" font-weight="700">alter<tspan fill="var(--color-accent)">/</tspan>me<tspan fill="var(--color-accent)">/</tspan>a<tspan fill="var(--color-accent)">/</tspan>i</text>
+    <text x={500} y={345} text-anchor="middle" fill="var(--color-faint)" font-family="var(--font-mono)" font-size="10.5">the cortex</text>
   </svg>
 </figure>
