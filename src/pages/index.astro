@@ -11,30 +11,34 @@ const COFFEE_URL = "https://buymeacoffee.com/marcoajello";
 const spokes = [
   {
     vertex: "Personae / Vault",
-    status: "soon" as const,
+    status: "built" as const,
     public: {
-      // alter-me.ai isn't live yet — render as coming soon, not a dead link.
       name: "alter-me.ai",
+      url: "https://alter-me.ai",
+      newTab: true,
       blurb: "know thyself | own your self — the sociotype: the face you deploy outward, shaped by the cortex's rules.",
     },
     private: {
-      // my-alter.ai isn't live yet — render as coming soon, not a dead link.
       name: "my-alter.ai",
+      url: "https://my-alter.ai",
+      newTab: true,
       blurb: "own your self | know thyself — the neurotype: the model-of-you, aggregated and interpreted on your terms.",
     },
   },
   {
     vertex: "Heuristics / Learning",
-    status: "soon" as const,
+    status: "built" as const,
     public: {
       name: "Listening to Myself",
-      url: "https://substack.com/@marcoajello",
+      url: "https://marcoajello.substack.com",
       newTab: true,
-      blurb: "problem-solving with AI — heuristics rendered out loud. On Substack now; a paired domain later.",
+      blurb: "problem-solving with AI — heuristics rendered out loud.",
     },
     private: {
       name: "Talking to Myself",
-      blurb: "learning with AI — the private practice that feeds the public method. The holding side of the pair.",
+      url: "https://marcoajello.substack.com",
+      newTab: true,
+      blurb: "learning with AI — the theory that feeds the method.",
     },
   },
   {
@@ -180,11 +184,8 @@ const spokes = [
       </p>
       <h2 class="text-3xl font-bold tracking-tight sm:text-4xl">Get the suite</h2>
       <p class="mx-auto mt-4 max-w-xl text-pretty text-muted">
-        alter/me/a/i is a small suite of lightweight, data-filtering extensions
-        and apps plus the Vault — a local-first, encrypted store you fully own.
-        They capture only from the sources you choose; the cortex gates
-        what reaches the Vault. Together they're the backbone of a complete
-        personal data-aggregation system. Free and open source, end to end.
+        Everything's here and open source — the extensions, the cortex, and the
+        Vault. Yours to run, on your machine, end to end.
       </p>
       <div class="mx-auto mt-8 flex max-w-md flex-col items-stretch justify-center gap-3 sm:max-w-none sm:flex-row sm:flex-wrap sm:items-center">
         <!-- The source is public now; the packaged extension isn't on the stores yet. -->
@@ -213,7 +214,7 @@ const spokes = [
           ☕ Buy me a coffee
         </a>
       </div>
-      <p class="mx-auto mt-5 max-w-md text-pretty font-mono text-xs leading-relaxed text-faint">The packaged extension is in development — store install links land here when it ships. Local-first, zero-network, works offline.</p>
+      <p class="mx-auto mt-5 max-w-md text-pretty font-mono text-xs leading-relaxed text-faint">Local-first, zero-network, works offline.</p>
     </div>
   </section>
 
@@ -224,8 +225,8 @@ const spokes = [
         alter<span class="text-accent">/</span>me<span class="text-accent">/</span>a<span class="text-accent">/</span>i — hosted at marcoajello.ai
       </span>
       <div class="flex flex-wrap items-center justify-center gap-5 font-mono">
-        <span class="cursor-default text-faint/70" aria-disabled="true">alter-me.ai <span class="text-[10px] uppercase">· soon</span></span>
-        <span class="cursor-default text-faint/70" aria-disabled="true">my-alter.ai <span class="text-[10px] uppercase">· soon</span></span>
+        <a href="https://alter-me.ai" target="_blank" rel="noopener noreferrer" class="transition hover:text-fg">alter-me.ai ↗</a>
+        <a href="https://my-alter.ai" target="_blank" rel="noopener noreferrer" class="transition hover:text-fg">my-alter.ai ↗</a>
         <a href="https://github.com/me-alter" target="_blank" rel="noopener noreferrer" class="transition hover:text-fg">github ↗</a>
         <a href="https://buymeacoffee.com/marcoajello" target="_blank" rel="noopener noreferrer" class="transition hover:text-fg">buy me a coffee ↗</a>
         <a href="https://substack.com/@marcoajello" target="_blank" rel="noopener noreferrer" class="transition hover:text-fg">substack ↗</a>
