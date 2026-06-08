@@ -1,7 +1,7 @@
 ---
 import Base from "../layouts/Base.astro";
 
-const GITHUB_URL = "https://github.com/me-alter";
+const GITHUB_URL = "https://github.com/alter-me-a-i";
 const COFFEE_URL = "https://buymeacoffee.com/marcoajello";
 const SUBSTACK_URL = "https://substack.com/@marcoajello";
 
@@ -97,10 +97,12 @@ const description =
       <span class="font-mono">
         alter<span class="text-accent">/</span>me<span class="text-accent">/</span>a<span class="text-accent">/</span>i — hosted at marcoajello.ai
       </span>
-      <div class="flex flex-wrap items-center justify-center gap-5 font-mono">
-        <a href="/" class="transition hover:text-fg">home</a>
-        <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" class="transition hover:text-fg">github ↗</a>
-        <a href={COFFEE_URL} target="_blank" rel="noopener noreferrer" class="transition hover:text-fg">buy me a coffee ↗</a>
+      <div class="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 font-mono text-xs uppercase tracking-wide">
+        <a href="/" class="transition hover:text-fg">marcoajello.ai <span class="text-faint">hub</span></a>
+        <a href="https://my-alter.ai" target="_blank" rel="noopener noreferrer" class="transition hover:text-fg">my-alter.ai <span class="text-faint">private</span></a>
+        <a href="https://alter-me.ai" target="_blank" rel="noopener noreferrer" class="transition hover:text-fg">alter-me.ai <span class="text-faint">learning</span></a>
+        <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" class="transition hover:text-fg">GitHub ↗</a>
+        <a href={COFFEE_URL} target="_blank" rel="noopener noreferrer" class="transition hover:text-fg">coffee ↗</a>
         <a href={SUBSTACK_URL} target="_blank" rel="noopener noreferrer" class="transition hover:text-fg">substack ↗</a>
       </div>
     </div>

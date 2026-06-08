@@ -3,9 +3,12 @@ import Base from "../layouts/Base.astro";
 import HubDiagram from "../components/HubDiagram.astro";
 import SpokeCard from "../components/SpokeCard.astro";
 
-// The whole suite is free and open source. GitHub org stays "me-alter"
-// (org name is independent of the displayed persona domain my-alter.ai).
-const GITHUB_URL = "https://github.com/me-alter";
+// The whole suite is free and open source. Canonical GitHub org is
+// "alter-me-a-i" — the live org the websites deploy from. (Heads up: a few
+// local repos still point at the older "me-alter" org; see the project notes.)
+const GITHUB_URL = "https://github.com/alter-me-a-i";
+const EXT_URL = "https://github.com/alter-me-a-i/alter-me-a-i"; // the cortex / extension
+const VAULT_URL = "https://github.com/alter-me-a-i/vault";      // the encrypted Vault app
 const COFFEE_URL = "https://buymeacoffee.com/marcoajello";
 
 const spokes = [
@@ -66,7 +69,7 @@ const spokes = [
           marcoajello<span class="text-accent-2">.ai</span>
         </span>
         <div class="flex items-center gap-5 text-faint">
-          <a href="#fractal" class="hidden transition hover:text-fg sm:inline">architecture</a>
+          <a href="#architecture" class="hidden transition hover:text-fg sm:inline">architecture</a>
           <a href="#spokes" class="hidden transition hover:text-fg sm:inline">spokes</a>
           <a href="/about" class="transition hover:text-fg">about</a>
           <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" class="shrink-0 whitespace-nowrap rounded-full border border-accent-2/40 px-3 py-1.5 text-accent-2 transition hover:bg-accent-2/10">
@@ -95,10 +98,10 @@ const spokes = [
       </p>
 
       <div class="mx-auto mt-9 flex max-w-md flex-col items-stretch justify-center gap-3 sm:max-w-none sm:flex-row sm:flex-wrap sm:items-center">
-        <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" class="fill-primary rounded-full px-6 py-3 text-center font-semibold text-bg transition hover:opacity-90">
+        <a href={EXT_URL} target="_blank" rel="noopener noreferrer" class="fill-primary rounded-full px-6 py-3 text-center font-semibold text-bg transition hover:opacity-90">
           Get the extension ↗
         </a>
-        <a href="#fractal" class="rounded-full border border-border bg-surface/60 px-6 py-3 text-center font-medium text-fg backdrop-blur-sm transition hover:border-accent-2/50">
+        <a href="#architecture" class="rounded-full border border-border bg-surface/60 px-6 py-3 text-center font-medium text-fg backdrop-blur-sm transition hover:border-accent-2/50">
           See how it fits together
         </a>
         <a href={COFFEE_URL} target="_blank" rel="noopener noreferrer" class="rounded-full border border-border bg-surface/60 px-6 py-3 text-center font-medium text-fg backdrop-blur-sm transition hover:border-accent-2/50">
@@ -108,7 +111,7 @@ const spokes = [
 
       <p class="mx-auto mt-6 max-w-md text-pretty font-mono text-xs leading-relaxed text-faint">
         100% free and open source — every extension, the Vault, and the cortex.
-        <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" class="break-token text-accent-2 underline-offset-2 hover:underline">github.com/me-alter ↗</a>
+        <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" class="break-token text-accent-2 underline-offset-2 hover:underline">github.com/alter-me-a-i ↗</a>
       </p>
 
       <p class="mx-auto mt-10 max-w-xl text-pretty font-mono text-xs leading-relaxed text-faint">
@@ -119,7 +122,7 @@ const spokes = [
   </header>
 
   <!-- ──────────────────── THE FRACTAL DIAGRAM ──────────────────── -->
-  <section id="fractal" class="mx-auto max-w-5xl scroll-mt-12 px-5 py-14 sm:px-6 sm:py-24">
+  <section id="architecture" class="mx-auto max-w-5xl scroll-mt-12 px-5 py-14 sm:px-6 sm:py-24">
     <div class="mb-10 text-center">
       <h2 class="text-balance text-3xl font-bold tracking-tight sm:text-4xl">One hub, two sides per area of life</h2>
       <p class="mx-auto mt-3 max-w-2xl text-pretty text-muted">
@@ -131,22 +134,22 @@ const spokes = [
 
     <HubDiagram />
 
-    <!-- the cortex → neurotype → sociotype model -->
+    <!-- the two sides, with the engine between them -->
     <div class="mx-auto mt-12 grid max-w-4xl gap-4 sm:mt-14 sm:grid-cols-3">
       <div class="rounded-2xl border border-private/30 bg-surface/60 p-5">
-        <div class="font-mono text-xs uppercase tracking-wide text-private">your private self</div>
-        <div class="mt-1 font-semibold">my-alter</div>
-        <p class="mt-2 text-sm text-muted">The model of you, built only from what you let in. It lives on your machine, and only you hold the key.</p>
+        <div class="font-mono text-xs uppercase tracking-wide text-private">the private side</div>
+        <div class="mt-1 font-semibold">my-alter.ai</div>
+        <p class="mt-2 text-sm text-muted">Privacy and the software: the extension, the setup wizard, and your encrypted Vault. It lives on your machine, and only you hold the key.</p>
       </div>
       <div class="rounded-2xl border border-accent-2/30 bg-surface/60 p-5">
         <div class="font-mono text-xs uppercase tracking-wide text-accent-2">the engine</div>
         <div class="mt-1 font-semibold">alter/me/a/i</div>
-        <p class="mt-2 text-sm text-muted">The engine in the middle. It decides what gets captured and what reaches your Vault. Your raw data never leaves your device.</p>
+        <p class="mt-2 text-sm text-muted">The cortex in the middle. It decides what gets captured and what reaches your Vault. Your raw data never leaves your device.</p>
       </div>
       <div class="rounded-2xl border border-public/30 bg-surface/60 p-5">
-        <div class="font-mono text-xs uppercase tracking-wide text-public">your public face</div>
-        <div class="mt-1 font-semibold">alter-me</div>
-        <p class="mt-2 text-sm text-muted">The version of you the world sees — public, and shaped entirely by your rules.</p>
+        <div class="font-mono text-xs uppercase tracking-wide text-public">the learning side</div>
+        <div class="mt-1 font-semibold">alter-me.ai</div>
+        <p class="mt-2 text-sm text-muted">The ideas out loud: the heuristics, the white papers, and the philosophy behind the tools — the part you can learn from and share.</p>
       </div>
     </div>
 
@@ -177,27 +180,36 @@ const spokes = [
       </p>
       <h2 class="text-3xl font-bold tracking-tight sm:text-4xl">Get the suite</h2>
       <p class="mx-auto mt-4 max-w-xl text-pretty text-muted">
-        Everything's here and open source — the extensions, the cortex, and the
-        Vault. Yours to run, on your machine, end to end.
+        Everything's here and open source — the extension, the cortex, and the
+        Vault. It isn't in the app or browser stores yet, so for now you clone it
+        from GitHub and run it on your own machine.
       </p>
-      <div class="mx-auto mt-8 flex max-w-md flex-col items-stretch justify-center gap-3 sm:max-w-none sm:flex-row sm:flex-wrap sm:items-center">
-        <!-- The source is public now; the packaged extension isn't on the stores yet. -->
+
+      <!-- The two pieces of software, with real repos + clone steps. -->
+      <div class="mx-auto mt-8 grid max-w-2xl gap-4 text-left sm:grid-cols-2">
+        <div class="rounded-2xl border border-border bg-bg-2/40 p-5">
+          <div class="font-semibold">The extension <span class="font-normal text-faint">— alter/me/a/i cortex</span></div>
+          <p class="mt-2 text-sm text-muted">Clone it, then load it unpacked in your browser (Developer mode → Load unpacked → pick the folder).</p>
+          <code class="mt-3 block overflow-x-auto whitespace-nowrap rounded-lg border border-border bg-bg/60 px-3 py-2 font-mono text-xs text-fg"><span class="text-faint">$ </span>git clone {EXT_URL}.git</code>
+          <a href={EXT_URL} target="_blank" rel="noopener noreferrer" class="mt-3 inline-block font-mono text-xs text-accent-2 underline-offset-2 hover:underline">github.com/alter-me-a-i/alter-me-a-i ↗</a>
+        </div>
+        <div class="rounded-2xl border border-border bg-bg-2/40 p-5">
+          <div class="font-semibold">The Vault app <span class="font-normal text-faint">— your encrypted store</span></div>
+          <p class="mt-2 text-sm text-muted">Clone it and follow the README to build and run it, then set your master password.</p>
+          <code class="mt-3 block overflow-x-auto whitespace-nowrap rounded-lg border border-border bg-bg/60 px-3 py-2 font-mono text-xs text-fg"><span class="text-faint">$ </span>git clone {VAULT_URL}.git</code>
+          <a href={VAULT_URL} target="_blank" rel="noopener noreferrer" class="mt-3 inline-block font-mono text-xs text-accent-2 underline-offset-2 hover:underline">github.com/alter-me-a-i/vault ↗</a>
+        </div>
+      </div>
+
+      <div class="mx-auto mt-7 flex max-w-md flex-col items-stretch justify-center gap-3 sm:max-w-none sm:flex-row sm:flex-wrap sm:items-center">
         <a
           href={GITHUB_URL}
           target="_blank"
           rel="noopener noreferrer"
           class="fill-primary inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 font-semibold text-bg transition hover:opacity-90"
         >
-          View the source on GitHub ↗
+          All the source on GitHub ↗
         </a>
-        <span
-          role="button"
-          aria-disabled="true"
-          class="inline-flex cursor-not-allowed items-center justify-center gap-2 rounded-full border border-accent-2/40 bg-accent-2/10 px-6 py-3 font-semibold text-accent-2"
-        >
-          <span class="h-2 w-2 shrink-0 rounded-full bg-accent-2/70"></span>
-          Add to your browser — coming soon
-        </span>
         <a
           href={COFFEE_URL}
           target="_blank"
@@ -217,11 +229,12 @@ const spokes = [
       <span class="font-mono">
         alter<span class="text-accent">/</span>me<span class="text-accent">/</span>a<span class="text-accent">/</span>i — hosted at marcoajello.ai
       </span>
-      <div class="flex flex-wrap items-center justify-center gap-5 font-mono">
-        <a href="https://alter-me.ai" target="_blank" rel="noopener noreferrer" class="transition hover:text-fg">alter-me.ai ↗</a>
-        <a href="https://my-alter.ai" target="_blank" rel="noopener noreferrer" class="transition hover:text-fg">my-alter.ai ↗</a>
-        <a href="https://github.com/me-alter" target="_blank" rel="noopener noreferrer" class="transition hover:text-fg">github ↗</a>
-        <a href="https://buymeacoffee.com/marcoajello" target="_blank" rel="noopener noreferrer" class="transition hover:text-fg">buy me a coffee ↗</a>
+      <div class="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 font-mono text-xs uppercase tracking-wide">
+        <span class="text-fg/80">marcoajello.ai <span class="text-faint">hub</span></span>
+        <a href="https://my-alter.ai" target="_blank" rel="noopener noreferrer" class="transition hover:text-fg">my-alter.ai <span class="text-faint">private</span></a>
+        <a href="https://alter-me.ai" target="_blank" rel="noopener noreferrer" class="transition hover:text-fg">alter-me.ai <span class="text-faint">learning</span></a>
+        <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" class="transition hover:text-fg">GitHub ↗</a>
+        <a href="https://buymeacoffee.com/marcoajello" target="_blank" rel="noopener noreferrer" class="transition hover:text-fg">coffee ↗</a>
         <a href="https://substack.com/@marcoajello" target="_blank" rel="noopener noreferrer" class="transition hover:text-fg">substack ↗</a>
       </div>
     </div>
