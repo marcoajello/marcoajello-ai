@@ -7,25 +7,35 @@ import SpokeCard from "../components/SpokeCard.astro";
 // "alter-me-a-i" — the live org the websites deploy from. (Heads up: a few
 // local repos still point at the older "me-alter" org; see the project notes.)
 const GITHUB_URL = "https://github.com/alter-me-a-i";
-const EXT_URL = "https://github.com/alter-me-a-i/alter-me-a-i"; // the cortex / extension
+const EXT_URL = "https://github.com/alter-me-a-i/alter-me-a-i"; // the extension
 const VAULT_URL = "https://github.com/alter-me-a-i/vault";      // the encrypted Vault app
 const COFFEE_URL = "https://buymeacoffee.com/marcoajello";
+
+// Real download targets for the suite.
+const CHROME_STORE_URL = "#chrome-web-store-pending";                              // Chrome Web Store listing (pending review)
+const EXT_ZIP_URL = "https://github.com/me-alter/alter-me-a-i/releases/latest";    // store-ready .zip build
+const VAULT_DL_URL = "https://github.com/me-alter/vault/releases/latest";          // Vault for Mac
+
+// The three ecosystem sites, made clickable.
+const PRIVATE_SITE = "https://my-alter.ai";   // the private side
+const ENGINE_SITE = "https://marcoajello.ai"; // the cortex / hub
+const LEARNING_SITE = "https://alter-me.ai";  // the learning side
 
 const spokes = [
   {
     vertex: "Personae / Vault",
     status: "built" as const,
     public: {
-      name: "alter-me.ai",
-      url: "https://alter-me.ai",
+      name: "Personae",
+      url: "https://my-alter.ai",
       newTab: true,
-      blurb: "Your public face — the version of you the world sees, on your terms.",
+      blurb: "Your public faces — curated, revocable exports of your Vault, shared on your terms. Minted on the private side.",
     },
     private: {
       name: "my-alter.ai",
       url: "https://my-alter.ai",
       newTab: true,
-      blurb: "Your private self — the model of you, kept on your machine, on your terms.",
+      blurb: "Your private self — the Vault and the software, kept on your machine. Only you hold the key.",
     },
   },
   {
@@ -94,11 +104,11 @@ const spokes = [
         extensions and apps</span> that feed your <span class="text-fg">Vault</span> — a
         local-first, encrypted store you fully own. Together they form
         <span class="text-fg">the backbone of a complete personal
-        data-aggregation system.</span> The cortex is the engine in the middle.
+        data-aggregation system.</span> The cortex sits in the middle.
       </p>
 
       <div class="mx-auto mt-9 flex max-w-md flex-col items-stretch justify-center gap-3 sm:max-w-none sm:flex-row sm:flex-wrap sm:items-center">
-        <a href={EXT_URL} target="_blank" rel="noopener noreferrer" class="fill-primary rounded-full px-6 py-3 text-center font-semibold text-bg transition hover:opacity-90">
+        <a href={PRIVATE_SITE} target="_blank" rel="noopener noreferrer" class="fill-primary rounded-full px-6 py-3 text-center font-semibold text-bg transition hover:opacity-90">
           Get the extension ↗
         </a>
         <a href="#architecture" class="rounded-full border border-border bg-surface/60 px-6 py-3 text-center font-medium text-fg backdrop-blur-sm transition hover:border-accent-2/50">
@@ -126,31 +136,31 @@ const spokes = [
     <div class="mb-10 text-center">
       <h2 class="text-balance text-3xl font-bold tracking-tight sm:text-4xl">One hub, two sides per area of life</h2>
       <p class="mx-auto mt-3 max-w-2xl text-pretty text-muted">
-        The engine sits in the middle. For each area of life there's a public
-        side that shows and a private side that holds — and the engine is the
+        The cortex sits in the middle. For each area of life there's a public
+        side that shows and a private side that holds — and the cortex is the
         only thing that touches both. Add a new pair whenever life adds an area.
       </p>
     </div>
 
     <HubDiagram />
 
-    <!-- the two sides, with the engine between them -->
+    <!-- the two sides, with the cortex between them -->
     <div class="mx-auto mt-12 grid max-w-4xl gap-4 sm:mt-14 sm:grid-cols-3">
-      <div class="rounded-2xl border border-private/30 bg-surface/60 p-5">
+      <a href={PRIVATE_SITE} target="_blank" rel="noopener noreferrer" class="group block cursor-pointer rounded-2xl border border-private/30 bg-surface/60 p-5 transition hover:border-private/70 hover:bg-surface">
         <div class="font-mono text-xs uppercase tracking-wide text-private">the private side</div>
-        <div class="mt-1 font-semibold">my-alter.ai</div>
+        <div class="mt-1 font-semibold text-accent group-hover:underline underline-offset-2">my-alter.ai ↗</div>
         <p class="mt-2 text-sm text-muted">Privacy and the software: the extension, the setup wizard, and your encrypted Vault. It lives on your machine, and only you hold the key.</p>
-      </div>
-      <div class="rounded-2xl border border-accent-2/30 bg-surface/60 p-5">
-        <div class="font-mono text-xs uppercase tracking-wide text-accent-2">the engine</div>
-        <div class="mt-1 font-semibold">alter/me/a/i</div>
+      </a>
+      <a href={ENGINE_SITE} target="_blank" rel="noopener noreferrer" class="group block cursor-pointer rounded-2xl border border-accent-2/30 bg-surface/60 p-5 transition hover:border-accent-2/70 hover:bg-surface">
+        <div class="font-mono text-xs uppercase tracking-wide text-accent">the cortex</div>
+        <div class="mt-1 font-semibold text-accent group-hover:underline underline-offset-2">alter/me/a/i ↗</div>
         <p class="mt-2 text-sm text-muted">The cortex in the middle. It decides what gets captured and what reaches your Vault. Your raw data never leaves your device.</p>
-      </div>
-      <div class="rounded-2xl border border-public/30 bg-surface/60 p-5">
+      </a>
+      <a href={LEARNING_SITE} target="_blank" rel="noopener noreferrer" class="group block cursor-pointer rounded-2xl border border-public/30 bg-surface/60 p-5 transition hover:border-public/70 hover:bg-surface">
         <div class="font-mono text-xs uppercase tracking-wide text-public">the learning side</div>
-        <div class="mt-1 font-semibold">alter-me.ai</div>
+        <div class="mt-1 font-semibold text-accent group-hover:underline underline-offset-2">alter-me.ai ↗</div>
         <p class="mt-2 text-sm text-muted">The ideas out loud: the heuristics, the white papers, and the philosophy behind the tools — the part you can learn from and share.</p>
-      </div>
+      </a>
     </div>
 
   </section>
@@ -161,7 +171,7 @@ const spokes = [
       <h2 class="text-3xl font-bold tracking-tight sm:text-4xl">The spokes</h2>
       <p class="mt-3 max-w-2xl text-pretty text-muted">
         Same idea every time: one public site that shows, one private site that
-        holds. The engine sits between them — it encrypts the private side and
+        holds. The cortex sits between them — it encrypts the private side and
         you control the public one.
       </p>
     </div>
@@ -178,26 +188,43 @@ const spokes = [
         <span class="h-1.5 w-1.5 rounded-full bg-ok"></span>
         Free and open source
       </p>
-      <h2 class="text-3xl font-bold tracking-tight sm:text-4xl">Get the suite</h2>
-      <p class="mx-auto mt-4 max-w-xl text-pretty text-muted">
-        Everything's here and open source — the extension, the cortex, and the
-        Vault. It isn't in the app or browser stores yet, so for now you clone it
-        from GitHub and run it on your own machine.
+      <h2 class="text-3xl font-bold tracking-tight sm:text-4xl">Get the software</h2>
+
+      <!-- Primary downloads up top: one click to install. -->
+      <div class="mx-auto mt-6 flex max-w-2xl flex-col items-stretch justify-center gap-3 sm:flex-row sm:flex-wrap sm:items-center">
+        <a href={CHROME_STORE_URL} class="fill-primary inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 font-semibold text-bg transition hover:opacity-90">
+          Add to Chrome ↗
+        </a>
+        <a href={EXT_ZIP_URL} target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 rounded-full border border-border bg-surface/60 px-6 py-3 font-medium text-fg transition hover:border-accent-2/50">
+          Download .zip
+        </a>
+        <a href={VAULT_DL_URL} target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 rounded-full border border-border bg-surface/60 px-6 py-3 font-medium text-fg transition hover:border-accent-2/50">
+          Download Vault for Mac
+        </a>
+      </div>
+
+      <p class="mx-auto mt-5 max-w-xl text-pretty text-muted">
+        Everything's free and open source — the extension, the cortex, and the
+        Vault. Prefer to build it yourself? Clone either repo from GitHub and run
+        it on your own machine.
       </p>
 
-      <!-- The two pieces of software, with real repos + clone steps. -->
+      <!-- The two pieces of software: download first, clone if you'd rather. -->
       <div class="mx-auto mt-8 grid max-w-2xl gap-4 text-left sm:grid-cols-2">
         <div class="rounded-2xl border border-border bg-bg-2/40 p-5">
-          <div class="font-semibold">The extension <span class="font-normal text-faint">— alter/me/a/i cortex</span></div>
-          <p class="mt-2 text-sm text-muted">Clone it, then load it unpacked in your browser (Developer mode → Load unpacked → pick the folder).</p>
-          <code class="mt-3 block overflow-x-auto whitespace-nowrap rounded-lg border border-border bg-bg/60 px-3 py-2 font-mono text-xs text-fg"><span class="text-faint">$ </span>git clone {EXT_URL}.git</code>
-          <a href={EXT_URL} target="_blank" rel="noopener noreferrer" class="mt-3 inline-block font-mono text-xs text-accent-2 underline-offset-2 hover:underline">github.com/alter-me-a-i/alter-me-a-i ↗</a>
+          <div class="font-semibold">The extension <span class="font-normal text-faint">— alter/me/a/i</span></div>
+          <p class="mt-2 text-sm text-muted">Add it from the Chrome Web Store, or grab the store-ready .zip and load it unpacked (Developer mode → Load unpacked → pick the folder).</p>
+          <div class="mt-3 flex flex-wrap gap-3">
+            <a href={CHROME_STORE_URL} class="inline-block font-mono text-xs text-accent-2 underline-offset-2 hover:underline">Add to Chrome ↗</a>
+            <a href={EXT_ZIP_URL} target="_blank" rel="noopener noreferrer" class="inline-block font-mono text-xs text-accent-2 underline-offset-2 hover:underline">Download .zip ↗</a>
+          </div>
+          <a href={EXT_URL} target="_blank" rel="noopener noreferrer" class="mt-2 inline-block font-mono text-xs text-faint underline-offset-2 hover:underline hover:text-accent-2">source on GitHub ↗</a>
         </div>
         <div class="rounded-2xl border border-border bg-bg-2/40 p-5">
           <div class="font-semibold">The Vault app <span class="font-normal text-faint">— your encrypted store</span></div>
-          <p class="mt-2 text-sm text-muted">Clone it and follow the README to build and run it, then set your master password.</p>
-          <code class="mt-3 block overflow-x-auto whitespace-nowrap rounded-lg border border-border bg-bg/60 px-3 py-2 font-mono text-xs text-fg"><span class="text-faint">$ </span>git clone {VAULT_URL}.git</code>
-          <a href={VAULT_URL} target="_blank" rel="noopener noreferrer" class="mt-3 inline-block font-mono text-xs text-accent-2 underline-offset-2 hover:underline">github.com/alter-me-a-i/vault ↗</a>
+          <p class="mt-2 text-sm text-muted">Download the Mac build and set your master password, or clone the repo and build it yourself from the README.</p>
+          <a href={VAULT_DL_URL} target="_blank" rel="noopener noreferrer" class="mt-3 inline-block font-mono text-xs text-accent-2 underline-offset-2 hover:underline">Download for Mac ↗</a>
+          <a href={VAULT_URL} target="_blank" rel="noopener noreferrer" class="mt-2 block font-mono text-xs text-faint underline-offset-2 hover:underline hover:text-accent-2">source on GitHub ↗</a>
         </div>
       </div>
 

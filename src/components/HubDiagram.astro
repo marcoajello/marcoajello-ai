@@ -18,7 +18,7 @@
 type Status = "built" | "soon" | "concept";
 type Vertex = { label: string; status: Status; public: string; private: string };
 
-const personae: Vertex = { label: "Personae / Vault", status: "built", public: "alter-me", private: "my-alter" };
+const personae: Vertex = { label: "Personae / Vault", status: "built", public: "personae", private: "my alter" };
 const heuristics: Vertex = { label: "Heuristics / Learning", status: "built", public: "listening", private: "talking" };
 const gaming: Vertex = { label: "Gaming / Health", status: "concept", public: "render", private: "hold" };
 
@@ -27,7 +27,7 @@ const SOLID = "0";
 const DOTS = "2 7"; // round-capped dots — the "growth / not-yet-built" texture
 
 const statusColor: Record<Status, string> = {
-  built: "var(--color-accent-2)",
+  built: "var(--color-ok)",
   soon: "var(--color-faint)",
   concept: "var(--color-border)",
 };
@@ -243,8 +243,8 @@ const M = layout({
     </g>
 
     {/* the cortex, glowing, at the centre */}
-    <circle cx={190} cy={250} r="42" fill="url(#coreGlowM)" filter="url(#softM)" opacity="0.55" class="pulse-slow"></circle>
-    <circle cx={190} cy={250} r="34" fill="var(--color-bg-2)" stroke="var(--color-accent)" stroke-width="2"></circle>
+    <circle cx={190} cy={250} r="50" fill="url(#coreGlowM)" filter="url(#softM)" opacity="0.55" class="pulse-slow"></circle>
+    <circle cx={190} cy={250} r="43" fill="var(--color-bg-2)" stroke="var(--color-accent)" stroke-width="2"></circle>
     <text x={190} y={248} text-anchor="middle" fill="var(--color-fg)" font-family="var(--font-mono)" font-size="11.5" font-weight="700" letter-spacing="-0.01em">alter<tspan fill="var(--color-accent)">/</tspan>me<tspan fill="var(--color-accent)">/</tspan>a<tspan fill="var(--color-accent)">/</tspan>i</text>
     <text x={190} y={263} text-anchor="middle" fill="var(--color-faint)" font-family="var(--font-mono)" font-size="9.5">the cortex</text>
   </svg>
@@ -314,8 +314,8 @@ const M = layout({
     </g>
 
     {/* the cortex, glowing, at the centre */}
-    <circle cx={500} cy={330} r="62" fill="url(#coreGlow)" filter="url(#soft)" opacity="0.55" class="pulse-slow"></circle>
-    <circle cx={500} cy={330} r="45" fill="var(--color-bg-2)" stroke="var(--color-accent)" stroke-width="2"></circle>
+    <circle cx={500} cy={330} r="72" fill="url(#coreGlow)" filter="url(#soft)" opacity="0.55" class="pulse-slow"></circle>
+    <circle cx={500} cy={330} r="56" fill="var(--color-bg-2)" stroke="var(--color-accent)" stroke-width="2"></circle>
     <text x={500} y={326} text-anchor="middle" fill="var(--color-fg)" font-family="var(--font-mono)" font-size="13" font-weight="700" letter-spacing="-0.01em">alter<tspan fill="var(--color-accent)">/</tspan>me<tspan fill="var(--color-accent)">/</tspan>a<tspan fill="var(--color-accent)">/</tspan>i</text>
     <text x={500} y={345} text-anchor="middle" fill="var(--color-faint)" font-family="var(--font-mono)" font-size="10.5">the cortex</text>
   </svg>
